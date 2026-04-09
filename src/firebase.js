@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 import {
   getFirestore,
   collection,
@@ -16,26 +17,17 @@ import {
 } from 'firebase/firestore';
 
 // ============================================================
-// SETUP INSTRUCTIONS:
-//
-// 1. Go to https://console.firebase.google.com
-// 2. Click "Create a project" (name it anything, e.g. "aaron-birthday")
-// 3. Once created, click the web icon </> to add a web app
-// 4. Copy the firebaseConfig object and paste it below
-// 5. Go to Firestore Database in the sidebar → "Create database"
-// 6. Choose "Start in TEST MODE" → pick any region → Done
-// 7. That's it! The guestbook + visitor counter will work.
-//
+// Firebase config (from Firebase Console → Project settings → Web app)
 // ============================================================
 
 const firebaseConfig = {
-  // PASTE YOUR FIREBASE CONFIG HERE:
-  // apiKey: "...",
-  // authDomain: "...",
-  // projectId: "...",
-  // storageBucket: "...",
-  // messagingSenderId: "...",
-  // appId: "...",
+  apiKey: 'AIzaSyByeHaJxNErRM9pN5XNXccQRnT7C6a1_sk',
+  authDomain: 'aaron-birthday-dba6e.firebaseapp.com',
+  projectId: 'aaron-birthday-dba6e',
+  storageBucket: 'aaron-birthday-dba6e.firebasestorage.app',
+  messagingSenderId: '53347558618',
+  appId: '1:53347558618:web:f69b4a80b94fa5921a71e3',
+  measurementId: 'G-4LJYW6NGDC',
 };
 
 const hasConfig = !!firebaseConfig.apiKey;
@@ -45,6 +37,11 @@ let db = null;
 if (hasConfig) {
   const app = initializeApp(firebaseConfig);
   db = getFirestore(app);
+  isSupported()
+    .then((yes) => {
+      if (yes) getAnalytics(app);
+    })
+    .catch(() => {});
 }
 
 export function isFirebaseConfigured() {
@@ -58,7 +55,7 @@ export function subscribeToGuestbook(callback) {
   const q = query(
     collection(db, 'guestbook'),
     orderBy('createdAt', 'desc'),
-    limit(50)
+    limit(50),
   );
   return onSnapshot(q, (snapshot) => {
     const entries = snapshot.docs.map((d) => ({
@@ -80,7 +77,6 @@ export async function addGuestbookEntry(name, message) {
 
 // --- Visitor Counter ---
 
-const COUNTER_DOC = 'stats/visitors';
 const VISITED_KEY = 'aaron-bday-visited';
 
 export async function trackVisitor() {
