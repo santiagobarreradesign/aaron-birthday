@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import AaronCharacter from './AaronCharacter';
 import PopupGenerator from './PopupGenerator';
 import Guestbook from './Guestbook';
+import DesktopIcons from './DesktopIcons';
+import HotspotGadgets from './HotspotGadgets';
 import useKonami from './hooks/useKonami';
 import { playPopupSpawn, playKonami, isMuted, toggleMute } from './audio';
 import { isFirebaseConfigured, trackVisitor, subscribeToVisitorCount } from './firebase';
 import {
-  AARON_BIRTHDAY,
   MAX_VISIBLE_POPUPS,
   POPUP_SPAWN_THROTTLE_MS,
   MOBILE_SPAWN_THROTTLE_MS,
@@ -16,12 +17,18 @@ import {
   CONFETTI_MESSAGES,
   TITLE_MESSAGES,
   AARON_FACTS,
+  DESKTOP_PROXIMITY,
+  HOTSPOT_PRIORITY,
 } from './config';
 
 let popupIdCounter = 0;
 
 function randomPick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function rectsOverlap(a, b) {
+  return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
 }
 
 function createPopup() {
@@ -102,32 +109,6 @@ function initMatrix(canvas) {
   };
 }
 
-// --- Countdown ---
-function useCountdown(targetISO) {
-  const [diff, setDiff] = useState(calcDiff(targetISO));
-
-  useEffect(() => {
-    const id = setInterval(() => setDiff(calcDiff(targetISO)), 1000);
-    return () => clearInterval(id);
-  }, [targetISO]);
-
-  return diff;
-}
-
-function calcDiff(targetISO) {
-  const now = Date.now();
-  const target = new Date(targetISO).getTime();
-  const ms = target - now;
-  if (ms <= 0) return null;
-  const s = Math.floor(ms / 1000);
-  return {
-    days: Math.floor(s / 86400),
-    hours: Math.floor((s % 86400) / 3600),
-    minutes: Math.floor((s % 3600) / 60),
-    seconds: s % 60,
-  };
-}
-
 // --- Decorative stars ---
 const STARS = Array.from({ length: 12 }, (_, i) => ({
   id: i,
@@ -137,6 +118,19 @@ const STARS = Array.from({ length: 12 }, (_, i) => ({
   size: 16 + Math.random() * 20,
   speed: 4 + Math.random() * 8,
 }));
+
+function TaskbarClock() {
+  const [t, setT] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setT(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <time className="taskbar-clock" dateTime={t.toISOString()}>
+      {t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+    </time>
+  );
+}
 
 function FactsTicker() {
   const [idx, setIdx] = useState(0);
@@ -149,7 +143,7 @@ function FactsTicker() {
   }, []);
 
   return (
-    <div className="facts-ticker" onClick={(e) => e.stopPropagation()}>
+    <div className="facts-ticker glass-panel" onClick={(e) => e.stopPropagation()}>
       <span className="ticker-label">📋 AARON FACT:</span>
       <span className="ticker-text">{AARON_FACTS[idx]}</span>
     </div>
@@ -167,8 +161,6 @@ export default function App() {
   const lastSpawnTime = useRef(0);
   const canvasRef = useRef(null);
   const isMobile = useRef(window.matchMedia('(max-width: 640px)').matches);
-
-  const countdown = useCountdown(AARON_BIRTHDAY);
 
   // Matrix background
   useEffect(() => {
@@ -259,7 +251,16 @@ export default function App() {
   // Global click → spawn popup
   useEffect(() => {
     function handler(e) {
-      if (e.target.closest('.guestbook') || e.target.closest('.mute-btn') || e.target.closest('.popup')) return;
+      if (
+        e.target.closest('.guestbook')
+        || e.target.closest('.mute-btn')
+        || e.target.closest('.popup')
+        || e.target.closest('.win7-taskbar')
+        || e.target.closest('.desktop-icon')
+        || e.target.closest('.facts-ticker')
+        || e.target.closest('.desktop-toast')
+        || e.target.closest('.desktop-hotspot')
+      ) return;
       enqueuePopup();
     }
     document.addEventListener('click', handler, true);
@@ -309,6 +310,96 @@ export default function App() {
     Math.floor(Math.random() * 50000) + 10000
   ).current;
 
+  const guestbookRef = useRef(null);
+  const hotspotRefs = useRef({
+    portfolio: null,
+    recycle: null,
+    recipes: null,
+    guestbook: null,
+    plant: null,
+    oatly: null,
+    motion: null,
+    turntable: null,
+  });
+  const lastCharSample = useRef(0);
+  const prevHotspotId = useRef(null);
+  const [charBounds, setCharBounds] = useState(null);
+  const [desktopToast, setDesktopToast] = useState(null);
+  const [activeHotspot, setActiveHotspot] = useState(null);
+
+  const spawnSystemPopup = useCallback((payload) => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const maxW = Math.min(vw * 0.92, 380);
+    const p = {
+      id: ++popupIdCounter,
+      type: 'system',
+      x: Math.max(10, Math.min(vw - maxW - 10, Math.random() * (vw - maxW))),
+      y: Math.max(40, Math.min(vh - 200, Math.random() * (vh - 250))),
+      zIndex: 9000 + popupIdCounter,
+      payload,
+      seed: Math.floor(Math.random() * 100),
+      behaviorFlags: { runaway: false, stubborn: false, spawnsChild: false },
+    };
+    playPopupSpawn();
+    triggerShake();
+    setPopups((prev) => {
+      if (prev.length >= MAX_VISIBLE_POPUPS) {
+        setPendingQueue((q) => [...q, p]);
+        return prev;
+      }
+      return [...prev, p];
+    });
+  }, [triggerShake]);
+
+  const handleCharPosition = useCallback((bounds) => {
+    const t = Date.now();
+    if (t - lastCharSample.current < 120) return;
+    lastCharSample.current = t;
+    setCharBounds(bounds);
+  }, []);
+
+  useEffect(() => {
+    if (!charBounds) {
+      setActiveHotspot(null);
+      prevHotspotId.current = null;
+      return;
+    }
+    const cr = {
+      left: charBounds.x,
+      top: charBounds.y,
+      right: charBounds.x + charBounds.w,
+      bottom: charBounds.y + charBounds.h,
+    };
+    let found = null;
+    for (const id of HOTSPOT_PRIORITY) {
+      const el = hotspotRefs.current[id];
+      if (!el) continue;
+      const ir = el.getBoundingClientRect();
+      const br = {
+        left: ir.left,
+        top: ir.top,
+        right: ir.right,
+        bottom: ir.bottom,
+      };
+      if (rectsOverlap(cr, br)) {
+        found = id;
+        break;
+      }
+    }
+    setActiveHotspot(found);
+    if (found !== prevHotspotId.current) {
+      prevHotspotId.current = found;
+      if (found) {
+        const lines = DESKTOP_PROXIMITY[found];
+        if (lines?.length) {
+          setDesktopToast(randomPick(lines));
+          setTimeout(() => setDesktopToast(null), 3500);
+        }
+      }
+    }
+  }, [charBounds]);
+
   useEffect(() => {
     if (!isFirebaseConfigured()) return;
     trackVisitor().then((c) => { if (c) setVisitorCount(c); });
@@ -317,6 +408,7 @@ export default function App() {
 
   return (
     <>
+      <div className="aurora-bg" aria-hidden />
       <canvas id="matrix-canvas" ref={canvasRef} />
 
       {STARS.map(s => (
@@ -334,66 +426,61 @@ export default function App() {
         </span>
       ))}
 
-      <div className={`app-wrapper ${shaking ? '' : ''}`}>
+      <div className={`app-wrapper desktop-shell ${shaking ? '' : ''}`}>
         {shaking && <style>{`body { animation: pageShake 0.3s ease-in-out; }`}</style>}
 
-        <header className="site-header">
+        <DesktopIcons
+          iconRefs={hotspotRefs}
+          onOpenPortfolio={() => {
+            window.open('https://aaronvince.com', '_blank', 'noopener,noreferrer');
+          }}
+          onRecycle={(msg) => spawnSystemPopup(msg)}
+          onVeggieRecipes={(msg) => spawnSystemPopup(msg)}
+          onGuestbookFocus={() => {
+            guestbookRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }}
+        />
+
+        <HotspotGadgets
+          hotspotRefs={hotspotRefs}
+          onSpawnSystem={(msg) => spawnSystemPopup(msg)}
+        />
+
+        {desktopToast && (
+          <div className="desktop-toast" role="status">
+            {desktopToast}
+          </div>
+        )}
+
+        <header className="site-header glass-panel">
           <h1>
             <span className="wobble">🎂</span>{' '}
             HAPPY BIRTHDAY AARON{' '}
             <span className="wobble">🎂</span>
           </h1>
           <p className="subtitle blink">
-            ★ MOTION DESIGNER ★ CODER ★ BIOLOGY MAJOR ★ TIM HORTONS ALUMNUS ★
+            ★ MOTION DESIGNER ★ CODER ★ BIOLOGY MAJOR ★ VEGETARIAN ★
           </p>
         </header>
 
         <FactsTicker />
 
-        {countdown ? (
-          <div className="countdown-box">
-            <h2 className="neon">⏰ COUNTDOWN TO THE BIG DAY ⏰</h2>
-            <div className="countdown-digits">
-              <div className="countdown-unit">
-                <span className="number">{String(countdown.days).padStart(2, '0')}</span>
-                <span className="label">Days</span>
-              </div>
-              <div className="countdown-unit">
-                <span className="number">{String(countdown.hours).padStart(2, '0')}</span>
-                <span className="label">Hours</span>
-              </div>
-              <div className="countdown-unit">
-                <span className="number">{String(countdown.minutes).padStart(2, '0')}</span>
-                <span className="label">Min</span>
-              </div>
-              <div className="countdown-unit">
-                <span className="number">{String(countdown.seconds).padStart(2, '0')}</span>
-                <span className="label">Sec</span>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="countdown-box">
-            <p className="countdown-passed rainbow">
-              🎉 IT&apos;S AARON&apos;S BIRTHDAY!!! 🎉
-            </p>
-          </div>
-        )}
-
         <div className="main-content">
-          <Guestbook />
+          <Guestbook ref={guestbookRef} />
         </div>
 
         <AaronCharacter
           popupCount={popups.length}
           onInteraction={enqueuePopup}
+          onPositionChange={handleCharPosition}
+          activeHotspot={activeHotspot}
         />
 
-        <div className="visitor-counter">
+        <div className="visitor-counter glass-panel">
           You are visitor #{(visitorCount ?? fallbackCount).toLocaleString()}!
           <br />
           <span style={{ fontSize: 8 }}>
-            (this site best viewed in Netscape Navigator 4.0 | NOT approved by The Workhouse Inc.)
+            (this site best viewed in Netscape Navigator 4.0 | résumé includes mail routes & motion graphics)
           </span>
           <br />
           <span style={{ fontSize: 8 }}>
@@ -409,14 +496,32 @@ export default function App() {
         onSpawnChild={handleSpawnChild}
       />
 
-      <button
-        className={`mute-btn ${muted ? 'muted' : ''}`}
-        onClick={handleMuteToggle}
-        title={muted ? 'Unmute' : 'Mute'}
-        aria-label={muted ? 'Unmute sounds' : 'Mute sounds'}
-      >
-        {muted ? '🔇' : '🔊'}
-      </button>
+      <nav className="win7-taskbar" aria-label="Taskbar">
+        <button
+          type="button"
+          className="start-orb"
+          onClick={(e) => {
+            e.stopPropagation();
+            playPopupSpawn();
+            setDesktopToast('Windows 7 aesthetic. Windows 11 anxiety.');
+            setTimeout(() => setDesktopToast(null), 2800);
+          }}
+          aria-label="Start"
+        />
+        <div className="taskbar-apps" aria-hidden />
+        <div className="taskbar-tray">
+          <button
+            type="button"
+            className={`mute-btn mute-btn--tray ${muted ? 'muted' : ''}`}
+            onClick={handleMuteToggle}
+            title={muted ? 'Unmute' : 'Mute'}
+            aria-label={muted ? 'Unmute sounds' : 'Mute sounds'}
+          >
+            {muted ? '🔇' : '🔊'}
+          </button>
+          <TaskbarClock />
+        </div>
+      </nav>
 
       {konamiActive && <div className="konami-flash" />}
 

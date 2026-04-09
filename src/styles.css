@@ -1,5 +1,5 @@
 /* ============================================================
-   2000s CHAOS BIRTHDAY STYLES
+   Aaron birthday — Windows 7 Aero + chaos DNA
    ============================================================ */
 
 :root {
@@ -9,10 +9,18 @@
   --yellow: #FFFF00;
   --orange: #FF6600;
   --purple: #9900FF;
-  --bg-dark: #000033;
-  --bg-darker: #000011;
+  --bg-dark: #0d2847;
+  --bg-darker: #071525;
+  --aero-blue: #2d6fb5;
+  --aero-blue-light: #6eb5e8;
+  --aero-titlebar: linear-gradient(180deg, #5a9fd4 0%, #3a7ab8 45%, #2566a0 100%);
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.28);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --taskbar-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.15) 100%), linear-gradient(90deg, #2566a0 0%, #1a4d7a 100%);
   --text-glow: 0 0 6px var(--lime), 0 0 12px var(--electric);
-  --ugly-shadow: 4px 4px 0 #000, 6px 6px 12px rgba(0,0,0,.6);
+  --ugly-shadow: 4px 4px 0 #000, 6px 6px 12px rgba(0, 0, 0, 0.45);
+  --font-ui: 'Segoe UI', 'Segoe UI Variable', Tahoma, Geneva, Verdana, sans-serif;
   --font-comic: 'Comic Sans MS', 'Chalkboard SE', cursive;
   --font-impact: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   --font-pixel: 'Press Start 2P', monospace;
@@ -30,20 +38,44 @@ html {
 }
 
 body {
-  font-family: var(--font-comic);
-  background: var(--bg-dark);
+  font-family: var(--font-ui);
+  background: var(--bg-darker);
   color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
   cursor: crosshair;
 }
 
-/* ---- MATRIX CANVAS ---- */
-#matrix-canvas {
+/* ---- AURORA (base layer) ---- */
+.aurora-bg {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 20%, rgba(120, 200, 255, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 60% at 80% 60%, rgba(80, 140, 220, 0.3) 0%, transparent 50%),
+    linear-gradient(165deg, #153a5c 0%, #1e5a8a 35%, #3d7ec9 65%, #1a3d5e 100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes auroraShift {
+    0%, 100% { filter: hue-rotate(0deg) saturate(1); }
+    50% { filter: hue-rotate(-8deg) saturate(1.05); }
+  }
+  .aurora-bg {
+    animation: auroraShift 24s ease-in-out infinite;
+  }
+}
+
+/* ---- MATRIX CANVAS ---- */
+#matrix-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.14;
+  mix-blend-mode: screen;
 }
 
 /* ---- PAGE SHAKE ---- */
@@ -164,117 +196,237 @@ body.shaking {
 /* ---- MAIN LAYOUT ---- */
 .app-wrapper {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  padding-bottom: 56px;
   gap: 24px;
+}
+
+.desktop-shell {
+  position: relative;
+}
+
+/* Shared glass card (header, guestbook, visitor strip) */
+.glass-panel {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 20, 50, 0.28), var(--glass-highlight);
+}
+
+/* ---- DESKTOP SHORTCUTS ---- */
+.desktop-icons {
+  position: fixed;
+  left: 10px;
+  top: max(88px, 10vh);
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  max-width: 92px;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 6px 4px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  line-height: 1.15;
+  max-width: 88px;
+  text-align: center;
+}
+
+.desktop-icon:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.desktop-icon:focus-visible {
+  outline: 2px solid var(--aero-blue-light);
+  outline-offset: 2px;
+}
+
+.desktop-icon-glyph {
+  font-size: 34px;
+  line-height: 1;
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.55));
+}
+
+.desktop-icon-label {
+  word-break: break-word;
+}
+
+/* Right column: gadgets Aaron can walk into */
+.desktop-gadgets {
+  position: fixed;
+  right: 10px;
+  top: max(88px, 10vh);
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  max-width: 92px;
+}
+
+.desktop-hotspot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 6px 4px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  line-height: 1.15;
+  max-width: 88px;
+  text-align: center;
+}
+
+.desktop-hotspot:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.desktop-hotspot:focus-visible {
+  outline: 2px solid var(--aero-blue-light);
+  outline-offset: 2px;
+}
+
+.desktop-toast {
+  position: fixed;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 7500;
+  padding: 10px 18px;
+  background: rgba(20, 45, 75, 0.94);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: var(--font-ui);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  max-width: min(92vw, 420px);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ---- WIN7 TASKBAR ---- */
+.win7-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 4px;
+  background: var(--taskbar-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.35);
+}
+
+.start-orb {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 2px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.55) 0%, transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.35) 0%, transparent 55%),
+    linear-gradient(145deg, #5cb0ff 0%, #1a6cb8 40%, #0c4a82 100%);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.45),
+    inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.start-orb:hover {
+  filter: brightness(1.06);
+}
+
+.start-orb:active {
+  transform: scale(0.97);
+}
+
+.taskbar-apps {
+  flex: 1;
+  min-height: 32px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.taskbar-tray {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.taskbar-clock {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
 }
 
 /* ---- HEADER ---- */
 .site-header {
   text-align: center;
-  padding: 16px 20px;
-  background: linear-gradient(135deg,
-    var(--hotpink) 0%,
-    var(--purple) 25%,
-    var(--electric) 50%,
-    var(--lime) 75%,
-    var(--yellow) 100%
-  );
-  background-size: 300% 300%;
-  animation: gradientShift 3s ease infinite;
-  border: 4px solid var(--yellow);
-  border-radius: 0;
-  box-shadow: var(--ugly-shadow);
+  padding: 18px 22px;
   width: 100%;
   max-width: 800px;
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 .site-header h1 {
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 5vw, 3rem);
+  font-size: clamp(1.35rem, 5vw, 2.75rem);
   color: #fff;
   text-shadow:
-    3px 3px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    0 0 20px var(--yellow),
-    0 0 40px var(--hotpink);
-  letter-spacing: 2px;
+    2px 2px 0 rgba(0, 0, 0, 0.35),
+    0 0 24px rgba(255, 220, 120, 0.35);
+  letter-spacing: 1px;
 }
 
 .site-header .subtitle {
   font-family: var(--font-pixel);
   font-size: clamp(0.35rem, 1.4vw, 0.6rem);
-  color: var(--yellow);
-  text-shadow: 2px 2px 0 #000;
-  margin-top: 8px;
-}
-
-/* ---- COUNTDOWN ---- */
-.countdown-box {
-  background: linear-gradient(180deg, var(--bg-darker), #110033);
-  border: 3px solid var(--lime);
-  box-shadow:
-    0 0 10px var(--lime),
-    0 0 20px var(--electric),
-    inset 0 0 10px rgba(0, 255, 0, 0.1);
-  padding: 16px 24px;
-  text-align: center;
-  width: 100%;
-  max-width: 500px;
-}
-
-.countdown-box h2 {
-  font-family: var(--font-impact);
-  color: var(--hotpink);
-  text-shadow: 2px 2px 0 #000, 0 0 10px var(--hotpink);
-  font-size: 1.3rem;
-  margin-bottom: 8px;
-}
-
-.countdown-digits {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.countdown-unit {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.countdown-unit .number {
-  font-family: var(--font-pixel);
-  font-size: clamp(1rem, 4vw, 1.8rem);
-  color: var(--lime);
-  text-shadow: 0 0 8px var(--lime);
-}
-
-.countdown-unit .label {
-  font-family: var(--font-comic);
-  font-size: 0.7rem;
-  color: var(--electric);
-  text-transform: uppercase;
-}
-
-.countdown-passed {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  color: var(--yellow);
-  text-shadow: 0 0 15px var(--yellow);
+  color: rgba(255, 255, 220, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  margin-top: 10px;
 }
 
 /* ---- MAIN CONTENT AREA ---- */
@@ -296,20 +448,17 @@ body.shaking {
 
 /* ---- GUESTBOOK ---- */
 .guestbook {
-  background: linear-gradient(180deg, #ffffcc 0%, #ffcc99 100%);
-  border: 3px solid var(--orange);
-  box-shadow: var(--ugly-shadow);
   padding: 16px;
   width: 100%;
   max-width: 380px;
-  color: #000;
+  color: #0f172a;
 }
 
 .guestbook h2 {
-  font-family: var(--font-impact);
-  font-size: 1.5rem;
-  color: var(--hotpink);
-  text-shadow: 1px 1px 0 #fff;
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0c2347;
   margin-bottom: 8px;
   text-align: center;
 }
@@ -323,11 +472,12 @@ body.shaking {
 
 .guestbook-form input,
 .guestbook-form textarea {
-  font-family: var(--font-comic);
+  font-family: var(--font-ui);
   font-size: 14px;
-  padding: 6px 8px;
-  border: 2px inset #999;
-  background: #fff;
+  padding: 8px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
   resize: vertical;
 }
 
@@ -344,11 +494,12 @@ body.shaking {
 }
 
 .guestbook-entry {
-  background: #fff;
-  border: 1px solid #ccc;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
   padding: 8px;
   font-size: 13px;
-  border-left: 4px solid var(--hotpink);
+  border-left: 4px solid var(--aero-blue);
 }
 
 .guestbook-entry .entry-name {
@@ -373,10 +524,18 @@ body.shaking {
   position: absolute;
   pointer-events: auto;
   width: min(92vw, 380px);
-  border: 3px outset #aaa;
-  box-shadow: 4px 4px 0 #000, 8px 8px 20px rgba(0,0,0,.5);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+    0 12px 40px rgba(0, 0, 0, 0.45);
   animation: popupEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   transform-origin: center center;
+}
+
+.popup--win7 {
+  font-family: var(--font-ui);
 }
 
 @keyframes popupEnter {
@@ -396,22 +555,24 @@ body.shaking {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3px 4px 3px 8px;
-  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  padding: 4px 6px 4px 10px;
+  background: var(--aero-titlebar);
   color: #fff;
-  font-family: var(--font-comic);
-  font-weight: bold;
+  font-family: var(--font-ui);
+  font-weight: 600;
   font-size: 13px;
   user-select: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .popup-close {
-  width: 20px;
-  height: 20px;
-  border: 2px outset #ccc;
-  background: #c0c0c0;
-  color: #000;
-  font-size: 12px;
+  width: 28px;
+  height: 22px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #e8a0a0 0%, #c75050 45%, #8b1e1e 100%);
+  color: #fff;
+  font-size: 13px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
@@ -419,10 +580,15 @@ body.shaking {
   justify-content: center;
   padding: 0;
   line-height: 1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.popup-close:hover {
+  filter: brightness(1.08);
 }
 
 .popup-close:active {
-  border-style: inset;
+  filter: brightness(0.92);
 }
 
 .popup-close.runaway {
@@ -495,33 +661,35 @@ body.shaking {
 
 /* ---- MUTE BUTTON ---- */
 .mute-btn {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  z-index: 10000;
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 3px solid var(--lime);
-  background: rgba(0, 0, 0, 0.7);
-  color: var(--lime);
-  font-size: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.25);
+  color: #e8f4ff;
+  font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 8px var(--lime);
-  transition: box-shadow 0.2s;
+  transition: background 0.15s, transform 0.1s;
 }
 
 .mute-btn:hover {
-  box-shadow: 0 0 16px var(--lime), 0 0 30px var(--electric);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .mute-btn.muted {
-  border-color: #666;
-  color: #666;
-  box-shadow: none;
+  opacity: 0.55;
+}
+
+.mute-btn--tray {
+  width: 34px;
+  height: 30px;
+  border-radius: 4px;
+  font-size: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* ---- KONAMI FLASH ---- */
@@ -573,10 +741,10 @@ body.shaking {
 .deco-star {
   position: fixed;
   pointer-events: none;
-  z-index: 0;
+  z-index: 2;
   font-size: var(--star-size, 24px);
   animation: starSpin var(--star-speed, 6s) linear infinite;
-  opacity: 0.6;
+  opacity: 0.28;
   top: var(--star-top);
   left: var(--star-left);
 }
@@ -667,6 +835,17 @@ body.shaking {
 }
 
 .head-confused { animation: headConfused 0.6s ease-in-out; transform-origin: center bottom; }
+
+@keyframes headPanic {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(-0.8px, 0) rotate(-1.2deg); }
+  66% { transform: translate(0.8px, 0) rotate(1.2deg); }
+}
+
+.aaron-head-group.head-mood-panic {
+  animation: headPanic 0.22s ease-in-out infinite;
+  transform-origin: 40px 26px;
+}
 .arm-waving { animation: armWave 0.5s ease-in-out 2; transform-origin: top center; }
 .leg-dancing { animation: legDance 0.3s ease-in-out 4; }
 
@@ -681,25 +860,21 @@ body.shaking {
 
 /* ---- VISITOR COUNTER (fake) ---- */
 .visitor-counter {
-  font-family: var(--font-pixel);
-  font-size: 10px;
-  color: var(--lime);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.92);
   text-align: center;
-  padding: 8px;
-  text-shadow: 0 0 4px var(--lime);
+  padding: 12px 14px;
 }
 
 .visitor-counter a {
-  color: var(--electric);
+  color: var(--aero-blue-light);
 }
 
 /* ---- FACTS TICKER ---- */
 .facts-ticker {
   width: 100%;
   max-width: 700px;
-  background: linear-gradient(90deg, #000 0%, #001a00 50%, #000 100%);
-  border: 2px solid var(--lime);
-  box-shadow: 0 0 8px var(--lime), inset 0 0 8px rgba(0, 255, 0, 0.05);
   padding: 10px 16px;
   display: flex;
   align-items: center;
@@ -707,11 +882,14 @@ body.shaking {
   overflow: hidden;
 }
 
+.facts-ticker.glass-panel {
+  background: rgba(15, 40, 70, 0.35);
+}
+
 .ticker-label {
   font-family: var(--font-pixel);
   font-size: clamp(0.5rem, 1.5vw, 0.7rem);
-  color: var(--yellow);
-  text-shadow: 0 0 6px var(--yellow);
+  color: rgba(255, 240, 180, 0.95);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -719,8 +897,7 @@ body.shaking {
 .ticker-text {
   font-family: var(--font-comic);
   font-size: clamp(0.75rem, 2vw, 0.95rem);
-  color: var(--lime);
-  text-shadow: 0 0 4px var(--lime);
+  color: rgba(230, 255, 240, 0.95);
   white-space: nowrap;
   animation: tickerSlide 0.5s ease-out;
 }
@@ -747,6 +924,7 @@ body.shaking {
   }
   body.shaking { animation: none !important; }
   .blink { animation: none !important; opacity: 1 !important; }
+  .aurora-bg { animation: none !important; }
   #matrix-canvas { display: none; }
 }
 
@@ -754,6 +932,7 @@ body.shaking {
 @media (max-width: 640px) {
   .app-wrapper {
     padding: 10px;
+    padding-bottom: 52px;
     gap: 16px;
   }
   .main-content {
@@ -769,5 +948,40 @@ body.shaking {
   .facts-ticker {
     flex-direction: column;
     text-align: center;
+  }
+  .desktop-icons {
+    position: absolute;
+    left: 8px;
+    top: 12px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: none;
+    width: calc(100% - 16px);
+    justify-content: center;
+    gap: 8px;
+    z-index: 3;
+  }
+  .desktop-icon {
+    max-width: 72px;
+    font-size: 10px;
+  }
+  .desktop-icon-glyph {
+    font-size: 28px;
+  }
+  .desktop-gadgets {
+    position: absolute;
+    right: 8px;
+    top: auto;
+    bottom: 120px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: calc(100% - 16px);
+    width: auto;
+    gap: 6px;
+  }
+  .desktop-hotspot {
+    max-width: 68px;
+    font-size: 9px;
   }
 }

@@ -62,7 +62,7 @@ function Popup({ data, onClose, onSpawnChild }) {
 
   return (
     <div
-      className={`popup type-${type} ${closing ? 'closing' : ''}`}
+      className={`popup popup--win7 type-${type} ${closing ? 'closing' : ''}`}
       style={{
         left: x,
         top: y,

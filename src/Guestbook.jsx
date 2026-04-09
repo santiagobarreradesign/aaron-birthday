@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import {
   isFirebaseConfigured,
   subscribeToGuestbook,
@@ -30,7 +30,7 @@ function formatDate(entry) {
   return 'just now';
 }
 
-export default function Guestbook() {
+const Guestbook = forwardRef(function Guestbook(_props, ref) {
   const [entries, setEntries] = useState([]);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
@@ -80,7 +80,7 @@ export default function Guestbook() {
   };
 
   return (
-    <div className="guestbook" onClick={(e) => e.stopPropagation()}>
+    <div ref={ref} className="guestbook glass-panel" onClick={(e) => e.stopPropagation()}>
       <h2>📝 Sign Aaron&apos;s Guestbook!</h2>
       {!useCloud && (
         <p style={{ fontSize: 10, color: '#999', textAlign: 'center', marginBottom: 6 }}>
@@ -121,4 +121,6 @@ export default function Guestbook() {
       </div>
     </div>
   );
-}
+});
+
+export default Guestbook;
