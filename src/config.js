@@ -111,11 +111,36 @@ export const KONAMI_CODE = [
 
 /** Priority when multiple hotspots overlap (first wins for Aaron’s reaction) */
 export const HOTSPOT_PRIORITY = [
-  'plant', 'oatly', 'motion', 'turntable', 'portfolio', 'recycle', 'recipes', 'guestbook',
+  'pickleJar',
+  'stovetop',
+  'snackTable',
+  'plant',
+  'oatly',
+  'motion',
+  'turntable',
+  'portfolio',
+  'recycle',
+  'recipes',
+  'guestbook',
 ];
 
 /** Toast lines when Aaron enters a hotspot zone */
 export const DESKTOP_PROXIMITY = {
+  pickleJar: [
+    'Pickle jar unsecured. Brine levels: dangerous.',
+    'That jar is basically a UX case study: twist, pull, crunch.',
+    'Dill detected. Courage: rising.',
+  ],
+  stovetop: [
+    'Stovetop.exe — sauté mode engaged.',
+    'Something’s simmering. Probably garlic. Definitely opinions.',
+    'Hot pan energy. Don’t touch the handle.',
+  ],
+  snackTable: [
+    'Birthday snacks table — fork etiquette: optional.',
+    'Cupcakes in the danger zone.',
+    'Sugar crash loading… 12%',
+  ],
   plant: [
     'Photosynthesis loading… 47%',
     'Don’t talk to me or my son (this pothos) ever again.',
@@ -184,10 +209,52 @@ export const DESKTOP_ICON_POPUPS = {
     'vinyl_collection.mp3 — "All tracks certified bangers. All opinions strong."',
     'Spotify wrapped could never.',
   ],
+  pickleJar: [
+    'BRINE_WARNING.log — "You opened this jar. There is no undo."',
+    'pickle_inventory.txt — Quantity: enough for one chaotic snack break.',
+  ],
+  stovetop: [
+    'stir_pan.gif — "If you’re not tossing the pan, are you even cooking?"',
+    'recipe_risotto.md — "Stir until your wrist files for workers’ comp."',
+  ],
+  snackTable: [
+    'birthday_cupcakes.zip — "Extract with care. Crumbs are forever."',
+    'snack_risk_assessment.pdf — Conclusion: worth it.',
+  ],
 };
 
-/** Aaron limb + line when he walks into a hotspot (picked randomly per entry) */
+/**
+ * Aaron limb + line when he walks into a hotspot.
+ * Optional `scene` drives layered HTML animations on the character (see AaronCharacter).
+ */
 export const HOTSPOT_AARON_REACTIONS = {
+  pickleJar: {
+    part: 'arms',
+    scene: 'pickleChomp',
+    lines: [
+      '*grabs pickle* CRUNCH. No regrets.',
+      'Dill me in. I’m ready.',
+      'Briny. Loud. Correct.',
+    ],
+  },
+  stovetop: {
+    part: 'arms',
+    scene: 'cookingSteam',
+    lines: [
+      '*stirs the imaginary pan* Toss! Toss!',
+      'Mise en place? I know her.',
+      'Medium heat. Maximum drama.',
+    ],
+  },
+  snackTable: {
+    part: 'head',
+    scene: 'cakeNibble',
+    lines: [
+      '*tiny fork commit* Worth the sugar.',
+      'One bite for the timeline. One bite for me.',
+      'Frosting on the birthday record.',
+    ],
+  },
   plant: { part: 'legs', lines: ['Watering… spiritually.', 'This pothos gets priority over my sleep.', 'Chlorophyll is just green motion design.'] },
   oatly: { part: 'arms', lines: ['Oat milk! Barista dreams!', 'Foam check: yes.', 'Dairy-adjacent but make it ethical.'] },
   motion: { part: 'head', lines: ['More keyframes!!!', 'That comp is judging me.', 'RAM says no. Heart says one more ease.'] },

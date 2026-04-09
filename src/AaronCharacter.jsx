@@ -43,6 +43,7 @@ const INTERACT_MESSAGES = [
   "Did you know 'lorem ipsum' is from a Cicero text from 45 BC?",
   "*notices bad kerning* ...I can't unsee it now",
   "Vegetarian cake and motion graphics. Name a better duo. I'll wait.",
+  "Walk near the pickle jar — I dare you.",
 ];
 
 const CHAR_W = 120;
@@ -68,6 +69,8 @@ export default function AaronCharacter({ popupCount, onInteraction, onPositionCh
   const [legAnim, setLegAnim] = useState(false);
   const [interactionCount, setInteractionCount] = useState(0);
   const [bubbleMsg, setBubbleMsg] = useState(null);
+  /** Layered props: flying pickle, stovetop steam, cake bite (see HOTSPOT_AARON_REACTIONS.scene) */
+  const [scenePlay, setScenePlay] = useState(null);
 
   const dragOffset = useRef({ x: 0, y: 0 });
   const bubbleTimer = useRef(null);
@@ -194,6 +197,13 @@ export default function AaronCharacter({ popupCount, onInteraction, onPositionCh
     if (!spec) return;
     const msg = randomPick(spec.lines);
     showBubble(msg);
+
+    let sceneTid;
+    if (spec.scene) {
+      setScenePlay(spec.scene);
+      sceneTid = setTimeout(() => setScenePlay(null), 3000);
+    }
+
     const part = spec.part;
     if (part === 'head') {
       setHeadAnim(true);
@@ -208,6 +218,10 @@ export default function AaronCharacter({ popupCount, onInteraction, onPositionCh
       playLegClick();
       setTimeout(() => setLegAnim(false), 1200);
     }
+
+    return () => {
+      if (sceneTid) clearTimeout(sceneTid);
+    };
   }, [activeHotspot, showBubble]);
 
   const handlePartClick = useCallback((part, e) => {
@@ -506,6 +520,28 @@ export default function AaronCharacter({ popupCount, onInteraction, onPositionCh
           </g>
         </g>
       </svg>
+
+      {scenePlay === 'pickleChomp' && (
+        <div className="aaron-scene-layer aaron-scene-pickle" aria-hidden>
+          <span className="pickle-sprite">🥒</span>
+          <span className="pickle-crunch">CRUNCH</span>
+        </div>
+      )}
+      {scenePlay === 'cookingSteam' && (
+        <div className="aaron-scene-layer aaron-scene-cook" aria-hidden>
+          <span className="cook-steam cook-s1">💨</span>
+          <span className="cook-pan">🍳</span>
+          <span className="cook-steam cook-s2">💨</span>
+          <span className="cook-spark">✨</span>
+        </div>
+      )}
+      {scenePlay === 'cakeNibble' && (
+        <div className="aaron-scene-layer aaron-scene-cake" aria-hidden>
+          <span className="cake-fork">🍴</span>
+          <span className="cake-bit">🧁</span>
+          <span className="cake-yum">nom</span>
+        </div>
+      )}
     </div>
   );
 }

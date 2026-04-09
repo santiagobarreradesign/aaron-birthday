@@ -4,6 +4,7 @@ import PopupGenerator from './PopupGenerator';
 import Guestbook from './Guestbook';
 import DesktopIcons from './DesktopIcons';
 import HotspotGadgets from './HotspotGadgets';
+import SceneEnvironment from './SceneEnvironment';
 import useKonami from './hooks/useKonami';
 import { playPopupSpawn, playKonami, isMuted, toggleMute } from './audio';
 import { isFirebaseConfigured, trackVisitor, subscribeToVisitorCount } from './firebase';
@@ -260,6 +261,7 @@ export default function App() {
         || e.target.closest('.facts-ticker')
         || e.target.closest('.desktop-toast')
         || e.target.closest('.desktop-hotspot')
+        || e.target.closest('.scene-prop')
       ) return;
       enqueuePopup();
     }
@@ -320,6 +322,9 @@ export default function App() {
     oatly: null,
     motion: null,
     turntable: null,
+    pickleJar: null,
+    stovetop: null,
+    snackTable: null,
   });
   const lastCharSample = useRef(0);
   const prevHotspotId = useRef(null);
@@ -442,6 +447,11 @@ export default function App() {
         />
 
         <HotspotGadgets
+          hotspotRefs={hotspotRefs}
+          onSpawnSystem={(msg) => spawnSystemPopup(msg)}
+        />
+
+        <SceneEnvironment
           hotspotRefs={hotspotRefs}
           onSpawnSystem={(msg) => spawnSystemPopup(msg)}
         />

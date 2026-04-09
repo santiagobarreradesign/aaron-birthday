@@ -316,6 +316,209 @@ body.shaking {
   outline-offset: 2px;
 }
 
+/* ---- SCENE PROPS (pickle jar, stovetop, snacks) — Aaron walks up to these ---- */
+.scene-environment {
+  position: fixed;
+  bottom: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 400;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 14px;
+  max-width: min(96vw, 520px);
+  padding: 0 8px;
+  pointer-events: auto;
+}
+
+.scene-prop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  background: rgba(20, 50, 85, 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  line-height: 1.1;
+  max-width: 76px;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.scene-prop:hover {
+  background: rgba(40, 80, 120, 0.65);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.scene-prop-glyph {
+  font-size: 26px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+.scene-prop-label {
+  word-break: break-word;
+}
+
+/* Character-attached scene FX (rendered after SVG) */
+.aaron-scene-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 120px;
+  height: 180px;
+  pointer-events: none;
+  z-index: 20;
+  overflow: visible;
+}
+
+/* Flying pickle → mouth */
+@keyframes pickleFlight {
+  0% {
+    transform: translate(0, 0) rotate(-15deg) scale(1);
+    opacity: 1;
+  }
+  55% {
+    transform: translate(44px, -102px) rotate(35deg) scale(1.05);
+    opacity: 1;
+  }
+  85% {
+    transform: translate(48px, -112px) rotate(20deg) scale(0.35);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(50px, -118px) rotate(0) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes crunchFlash {
+  0%, 50% { opacity: 0; transform: scale(0.3); }
+  62% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 0; transform: scale(0.9); }
+}
+
+.aaron-scene-pickle .pickle-sprite {
+  position: absolute;
+  left: 2px;
+  bottom: 36px;
+  font-size: 30px;
+  line-height: 1;
+  animation: pickleFlight 2.4s ease-in-out forwards;
+}
+
+.aaron-scene-pickle .pickle-crunch {
+  position: absolute;
+  left: 38px;
+  top: 18px;
+  font-family: var(--font-impact);
+  font-size: 12px;
+  color: var(--lime);
+  text-shadow: 0 0 6px var(--lime);
+  animation: crunchFlash 2.4s ease-out forwards;
+}
+
+/* Stovetop steam */
+@keyframes steamFloat {
+  0% { opacity: 0; transform: translateY(8px) scale(0.8); }
+  30% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-36px) scale(1.1); }
+}
+
+@keyframes panToss {
+  0%, 100% { transform: rotate(-6deg) translateY(0); }
+  50% { transform: rotate(8deg) translateY(-3px); }
+}
+
+.aaron-scene-cook .cook-pan {
+  position: absolute;
+  left: 38px;
+  bottom: 52px;
+  font-size: 26px;
+  animation: panToss 0.45s ease-in-out 5;
+}
+
+.aaron-scene-cook .cook-steam {
+  position: absolute;
+  left: 40px;
+  bottom: 78px;
+  font-size: 16px;
+  animation: steamFloat 2.4s ease-out forwards;
+}
+
+.aaron-scene-cook .cook-s2 {
+  left: 52px;
+  bottom: 72px;
+  animation-delay: 0.2s;
+}
+
+.aaron-scene-cook .cook-spark {
+  position: absolute;
+  left: 58px;
+  bottom: 60px;
+  font-size: 12px;
+  opacity: 0;
+  animation: crunchFlash 2s ease-out 0.3s forwards;
+}
+
+/* Cupcake nibble */
+@keyframes cakeToMouth {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(36px, -96px) scale(0.9);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(42px, -108px) scale(0.2);
+    opacity: 0;
+  }
+}
+
+@keyframes forkWave {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(15deg); }
+}
+
+.aaron-scene-cake .cake-fork {
+  position: absolute;
+  left: 8px;
+  bottom: 44px;
+  font-size: 22px;
+  animation: forkWave 0.35s ease-in-out 6;
+}
+
+.aaron-scene-cake .cake-bit {
+  position: absolute;
+  left: 6px;
+  bottom: 30px;
+  font-size: 26px;
+  animation: cakeToMouth 2.5s ease-in-out forwards;
+}
+
+.aaron-scene-cake .cake-yum {
+  position: absolute;
+  left: 44px;
+  top: 24px;
+  font-family: var(--font-comic);
+  font-size: 11px;
+  color: var(--hotpink);
+  opacity: 0;
+  animation: crunchFlash 2.5s ease-out 0.4s forwards;
+}
+
 .desktop-toast {
   position: fixed;
   bottom: 48px;
@@ -928,11 +1131,51 @@ body.shaking {
   #matrix-canvas { display: none; }
 }
 
-/* ---- MOBILE ---- */
+/* ---- MOBILE / NARROW (shortcuts in flow — no overlap with H1) ---- */
+@media (max-width: 768px) {
+  .desktop-icons {
+    position: static;
+    left: auto;
+    top: auto;
+    right: auto;
+    width: 100%;
+    max-width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    align-items: flex-start;
+    gap: 6px 8px;
+    margin: 0 auto 4px;
+    padding: max(4px, env(safe-area-inset-top)) 8px 10px;
+    z-index: auto;
+  }
+
+  .desktop-icon {
+    flex: 0 1 calc(25% - 8px);
+    min-width: 0;
+    max-width: 88px;
+    padding: 4px 2px;
+    font-size: 9px;
+    line-height: 1.1;
+  }
+
+  .desktop-icon-glyph {
+    font-size: 24px;
+  }
+
+  .desktop-icon-label {
+    display: block;
+    max-height: 2.4em;
+    overflow: hidden;
+  }
+}
+
 @media (max-width: 640px) {
   .app-wrapper {
     padding: 10px;
     padding-bottom: 52px;
+    padding-top: max(8px, env(safe-area-inset-top));
     gap: 16px;
   }
   .main-content {
@@ -949,24 +1192,13 @@ body.shaking {
     flex-direction: column;
     text-align: center;
   }
-  .desktop-icons {
-    position: absolute;
-    left: 8px;
-    top: 12px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    max-width: none;
-    width: calc(100% - 16px);
-    justify-content: center;
-    gap: 8px;
-    z-index: 3;
+  .site-header {
+    margin-top: 0;
+    width: 100%;
   }
-  .desktop-icon {
-    max-width: 72px;
-    font-size: 10px;
-  }
-  .desktop-icon-glyph {
-    font-size: 28px;
+  .site-header h1 {
+    font-size: clamp(1.1rem, 6.5vw, 2.2rem);
+    line-height: 1.15;
   }
   .desktop-gadgets {
     position: absolute;
@@ -983,5 +1215,18 @@ body.shaking {
   .desktop-hotspot {
     max-width: 68px;
     font-size: 9px;
+  }
+  .scene-environment {
+    bottom: 40px;
+    gap: 6px;
+    padding: 0 4px;
+  }
+  .scene-prop {
+    max-width: 64px;
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+  .scene-prop-glyph {
+    font-size: 22px;
   }
 }
