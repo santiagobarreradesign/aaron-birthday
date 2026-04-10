@@ -1,4 +1,10 @@
-import { useState, useEffect, forwardRef } from 'react';
+import {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import {
   isFirebaseConfigured,
   subscribeToGuestbook,
@@ -31,11 +37,18 @@ function formatDate(entry) {
 }
 
 const Guestbook = forwardRef(function Guestbook(_props, ref) {
+  const rootRef = useRef(null);
+  const [expanded, setExpanded] = useState(false);
   const [entries, setEntries] = useState([]);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [useCloud] = useState(isFirebaseConfigured);
+
+  useImperativeHandle(ref, () => ({
+    expand: () => setExpanded(true),
+    scrollIntoView: (opts) => rootRef.current?.scrollIntoView(opts),
+  }), []);
 
   useEffect(() => {
     if (useCloud) {
@@ -80,44 +93,69 @@ const Guestbook = forwardRef(function Guestbook(_props, ref) {
   };
 
   return (
-    <div ref={ref} className="guestbook glass-panel" onClick={(e) => e.stopPropagation()}>
-      <h2>📝 Sign Aaron&apos;s Guestbook!</h2>
-      {!useCloud && (
-        <p style={{ fontSize: 10, color: '#999', textAlign: 'center', marginBottom: 6 }}>
-          (local mode — set up Firebase to share across visitors)
-        </p>
-      )}
-      <form className="guestbook-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Your name..."
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          maxLength={40}
-        />
-        <textarea
-          placeholder="Write a birthday wish!"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          maxLength={200}
-        />
-        <button type="submit" className="btn-y2k btn-bounce" disabled={submitting}>
-          {submitting ? '⏳ Signing...' : '✍️ Sign Guestbook!'}
-        </button>
-      </form>
-      <div className="guestbook-entries">
-        {entries.length === 0 && (
-          <p style={{ fontStyle: 'italic', color: '#888', fontSize: 13 }}>
-            Be the first to sign! ⬆️
-          </p>
-        )}
-        {entries.map((entry) => (
-          <div key={entry.id} className="guestbook-entry">
-            <span className="entry-name">{entry.name}</span>
-            <span className="entry-date"> — {formatDate(entry)}</span>
-            <p>{entry.message}</p>
+    <div
+      ref={rootRef}
+      className={`guestbook guestbook-root glass-panel ${expanded ? 'guestbook-is-open' : 'guestbook-is-closed'}`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        className="guestbook-latch"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+      >
+        <span className="guestbook-latch-icon" aria-hidden>📖</span>
+        <span className="guestbook-latch-text">
+          {expanded
+            ? 'Fold guestbook'
+            : 'Guestbook — closed for dramatic entrance. Click to open & sign ✨'}
+        </span>
+        <span className="guestbook-latch-chevron" aria-hidden>{expanded ? '▲' : '▼'}</span>
+      </button>
+
+      <div className="guestbook-sheet" aria-hidden={!expanded}>
+        <div className="guestbook-sheet-inner">
+          <div className="guestbook-header-row">
+            <h2>📝 Sign Aaron&apos;s Guestbook!</h2>
           </div>
-        ))}
+          {!useCloud && (
+            <p className="guestbook-local-note">
+              (local mode — set up Firebase to share across visitors)
+            </p>
+          )}
+          <form className="guestbook-form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Your name..."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={40}
+            />
+            <textarea
+              placeholder="Write a birthday wish!"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              maxLength={200}
+            />
+            <button type="submit" className="btn-y2k btn-bounce" disabled={submitting}>
+              {submitting ? '⏳ Signing...' : '✍️ Sign Guestbook!'}
+            </button>
+          </form>
+          <div className="guestbook-entries">
+            {entries.length === 0 && (
+              <p className="guestbook-empty">
+                Be the first to sign! ⬆️
+              </p>
+            )}
+            {entries.map((entry) => (
+              <div key={entry.id} className="guestbook-entry">
+                <span className="entry-name">{entry.name}</span>
+                <span className="entry-date"> — {formatDate(entry)}</span>
+                <p>{entry.message}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -72,7 +72,7 @@ export const SPEECH_BUBBLE_MESSAGES = [
   "Fun fact: Comic Sans was designed for Microsoft Bob in 1994",
   "Did you try the guestbook? I designed guestbooks at Fife House!",
   "Is that a popup? My UX training is screaming",
-  "Vegetarian snacks + motion graphics = the perfect combo. Trust me.",
+  "Vegetarian apps + motion graphics = the perfect combo. Trust me.",
   "I have a Biology degree AND a Design degree. I contain multitudes.",
   "Fun fact: The average person sees 10,000 ads a day. This site has MORE.",
   "This website violates every design principle I learned at York",
@@ -109,17 +109,13 @@ export const KONAMI_CODE = [
   'b', 'a',
 ];
 
-/** Priority when multiple hotspots overlap (first wins for Aaron’s reaction) */
+/**
+ * Walking proximity: desktop shortcuts only. Kitchen/gadget props are drag-to-Aaron
+ * (see INTERACTIVE_DRAG_ITEMS) so refs don’t fight floating icons.
+ */
 export const HOTSPOT_PRIORITY = [
-  'pickleJar',
-  'stovetop',
-  'snackTable',
-  'plant',
-  'oatly',
-  'motion',
-  'turntable',
   'portfolio',
-  'recycle',
+  'memories',
   'recipes',
   'guestbook',
 ];
@@ -136,10 +132,10 @@ export const DESKTOP_PROXIMITY = {
     'Something’s simmering. Probably garlic. Definitely opinions.',
     'Hot pan energy. Don’t touch the handle.',
   ],
-  snackTable: [
-    'Birthday snacks table — fork etiquette: optional.',
-    'Cupcakes in the danger zone.',
-    'Sugar crash loading… 12%',
+  cocktailBar: [
+    'Cocktail bar unsecured. Shaker noise: imminent.',
+    'Tiny umbrellas detected. Classiness: rising.',
+    'Ice clink loading… 47%. Lime wedge: negotiable.',
   ],
   plant: [
     'Photosynthesis loading… 47%',
@@ -166,10 +162,10 @@ export const DESKTOP_PROXIMITY = {
     'Walking past my own work. Hi, aaronvince.com!',
     'That shortcut? Way more professional than this page.',
   ],
-  recycle: [
-    'You can’t delete the birthday, it’s in the cloud now.',
-    'Recycle Bin: still full of Comic Sans from 2009.',
-    'Don’t drag me in there — I have deadlines!',
+  memories: [
+    'Book of Memories.exe — do not fold, spindle, or emotionally annotate.',
+    'Walking past the scrapbook dimension. Nostalgia levels: hazardous.',
+    'Those JPEGs have more lore than my After Effects precomps.',
   ],
   recipes: [
     'Recipes folder: veggies first, cheese negotiable.',
@@ -183,15 +179,265 @@ export const DESKTOP_PROXIMITY = {
   ],
 };
 
+/**
+ * Absurd-but-real veggie recipes for the 🥗 desktop icon (structured for recipe popups).
+ * Each has actual cookable bones + jokes.
+ */
+export const VEGGIE_RECIPES = [
+  {
+    title: 'Sink Salad (ISO Certified)',
+    icon: '🥬',
+    time: '15 min · Difficulty: peer-reviewed',
+    ingredients: [
+      '🥬 Mixed greens — the bag that swore it was “pre-washed” (wash anyway, trust no romaine)',
+      '🥕 Shredded carrot — legally required for “color”',
+      '🫘 Chickpeas (canned) — drain them like bad opinions',
+      '🍋 Lemon juice, 🫒 olive oil, 🧂 salt, pepper — the holy trinity of “I’m fine”',
+    ],
+    steps: [
+      'Combine greens + carrot in the largest bowl you own (or eat from the colander — we don’t judge).',
+      'Whisk oil + lemon + salt until it looks like you know what emulsification means.',
+      'Toss. Add chickpeas. Toss again like you’re hiding evidence.',
+      'Optional: eat standing over the sink for +10 authenticity points.',
+    ],
+    footnote: '📎 Nutrition: 1× serving of pretending you meal-prepped.',
+  },
+  {
+    title: 'Cauliflower “Steak” (It Identifies as Dinner)',
+    icon: '🥦',
+    time: '35 min · Oven @ 220°C / 425°F',
+    ingredients: [
+      '🥦 1 thick cauliflower slice (~2–3 cm) per person — pick a confident head',
+      '🫒 2 tbsp olive oil — enough to make it glisten on Instagram',
+      '🧄 Garlic powder, smoked paprika, salt — the “I’m fancy” starter pack',
+    ],
+    steps: [
+      'Slice cauliflower into slabs; smaller bits become “croutons” (not mistakes).',
+      'Brush both sides with oil + spices. Whisper “you’re still valid” to the florets.',
+      'Roast 20–25 min, flip once, until edges are crispy and your apartment smells expensive.',
+      'Serve on a plate so it doesn’t feel like a side dish having an identity crisis.',
+    ],
+    footnote: '⭐ Contains zero cows. Contains 100% main-character energy.',
+  },
+  {
+    title: 'Avocado Toast (Millennial DLC)',
+    icon: '🥑',
+    time: '7 min · DLC: flaky salt not included in base game',
+    ingredients: [
+      '🍞 Bread — sourdough if you’re trying to impress the algorithm',
+      '🥑 ½ ripe avocado — should yield like soft butter, not sadness',
+      '🍋 Lemon wedge, 🧂 salt, chili flakes 🌶️ — optional but morally correct',
+    ],
+    steps: [
+      'Toast bread until it sounds hollow when tapped (or until smoke — pick a lane).',
+      'Mash avocado with fork; leave some chunks for “rustic texture” (lazy is a style).',
+      'Spread thick. Lemon + salt + flakes on top. Photograph before eating. Mandatory.',
+    ],
+    footnote: '🏠 Pair with: oat latte and explaining kerning to no one.',
+  },
+  {
+    title: 'One-Pan Ratatouille (Pixar Not Included)',
+    icon: '🍆',
+    time: '45 min · Stovetop + patience',
+    ingredients: [
+      '🍆 Eggplant, 🥒 Zucchini, 🫑 Bell pepper, 🍅 Tomatoes — the vegetable friend group',
+      '🧅 Onion + 🧄 garlic — the HR department of flavor',
+      '🌿 Thyme or basil, 🫒 olive oil, salt — negotiate amounts with your ancestors',
+    ],
+    steps: [
+      'Dice everything while listening to a podcast about French cinema for immersion.',
+      'Soft-cook onion & garlic in oil until your kitchen smells like a bistro LARP.',
+      'Add veg in waves (hard → soft), simmer until it looks like a stew that went to art school.',
+      'Serve with bread to mop the bowl — forks are optional; judgment is not.',
+    ],
+    footnote: '🎬 If a tiny rat appears, that’s a you problem.',
+  },
+  {
+    title: 'Creamy Mushroom Pasta (Zero Moo-Juice)',
+    icon: '🍄',
+    time: '25 min · Serves: your feelings',
+    ingredients: [
+      '🍝 Pasta — any shape that fits your emotional availability',
+      '🍄 Mushrooms, sliced — cremini if you’re classy; white if you’re honest',
+      '🧄 Garlic, 🧅 shallot — mince until your knife skills file for overtime',
+      '🥛 Oat cream or cashew cream — ~120 ml; soy milk works in a pinch (don’t tell Italy)',
+      '🌿 Parsley, 🧂 salt, pepper, optional 🧀 veg parmesan',
+    ],
+    steps: [
+      'Boil pasta in salted water “like the sea” (marine biologists may disagree).',
+      'Sauté mushrooms on high heat until they stop releasing their trust issues (juices evaporate).',
+      'Add garlic/shallot, deglaze with a splash of pasta water — fancy word: “sauce”.',
+      'Stir in cream, toss pasta, finish with parsley. Twirl fork for cinematic effect.',
+    ],
+    footnote: '🐄 Cows thanked. Italians… tolerated.',
+  },
+  {
+    title: 'Stuffed Peppers (Edible Buckets)',
+    icon: '🫑',
+    time: '50 min · Oven-baked optimism',
+    ingredients: [
+      '🫑 Bell peppers — tops cut off, seeds evicted',
+      '🍚 Cooked rice + 🫘 black beans — the filler arc',
+      '🌽 Corn, 🍅 diced tomato, 🧅 onion, cumin, chili powder — “southwest” without a passport',
+      '🧀 Shredded cheese (veg) — enough to glue it all together legally',
+    ],
+    steps: [
+      'Mix filling in a bowl; taste — adjust spice until your nose tingles politely.',
+      'Stuff peppers until they look like they’re wearing puffer jackets.',
+      'Bake ~35 min at 190°C / 375°F until peppers slump but still hold secrets.',
+      'Top with cheese in last 5 min for a golden crust of hope.',
+    ],
+    footnote: '🪣 Yes, it’s a vegetable wearing a casserole. Embrace it.',
+  },
+  {
+    title: 'Sweet Potato Fries (With Denial)',
+    icon: '🍠',
+    time: '35 min · Crispiness not guaranteed, vibes are',
+    ingredients: [
+      '🍠 Sweet potatoes — cut into matchsticks or wedges (thickness = drama)',
+      '🫒 Oil, 🌽 cornstarch (1 tsp) — the crispiness lobby',
+      '🧂 Salt, smoked paprika — optional cinnamon if you’re feeling chaotic good',
+    ],
+    steps: [
+      'Soak cuts in cold water 10 min → dry VERY well (water = steam = sog).',
+      'Toss with oil + cornstarch + spices until each fry looks coated, not caked.',
+      'Bake single-layer on parchment, flip halfway, until edges caramelize.',
+      'Tell yourself they’re “basically salad.” Mean it.',
+    ],
+    footnote: '🍟 Not McDonald’s. Still counts as vegetables if you manifest hard enough.',
+  },
+  {
+    title: 'Emergency Hummus (Blender Therapy)',
+    icon: '🫘',
+    time: '10 min + 1 apology to your blender',
+    ingredients: [
+      '🫘 1 can chickpeas — skinned if you’re a perfectionist; whole if you’re alive',
+      '🥄 Tahini — 2–3 tbsp; stir the oil in first (jar trust issues)',
+      '🍋 Lemon juice, 🧄 garlic clove, 🧂 salt, 🫒 olive oil, 💧 ice water splash',
+    ],
+    steps: [
+      'Drain chickpeas; reserve liquid (aquafaba) for… feelings and thinning.',
+      'Blend tahini + lemon + garlic until smooth — add chickpeas in waves.',
+      'Stream in oil + cold water until it looks like velvet propaganda.',
+      'Taste. Add salt until it stops tasting like “healthy.”',
+    ],
+    footnote: '📎 Pairs with: carrots, pita, and pretending you meal-prepped.',
+  },
+];
+
+/**
+ * Gallery images (served from /public/memories/). Alt text is the punchline.
+ */
+export const BOOK_OF_MEMORIES_ITEMS = [
+  {
+    id: 'm1',
+    src: 'memories/memory-01.jpg',
+    alt:
+      'POV: you are a single crumb on a renovation floor; two benevolent giants loom through plastic sheeting and blue tape, nostrils wide with architectural curiosity.',
+  },
+  {
+    id: 'm2',
+    src: 'memories/memory-02.jpg',
+    alt:
+      'A wild Peace-Sign Pouter leans into brick-wall destiny with an ice cream cone, while his friend serenely negotiates with a cup of red sorbet. Two moods, one sunburn.',
+  },
+  {
+    id: 'm3',
+    src: 'memories/memory-03.jpg',
+    alt:
+      'A man in a cozy hoodie is spiritually audited by a powdered-wig oil painting who clearly thinks Bluetooth was a mistake. Heritage judgment: maximum.',
+  },
+  {
+    id: 'm4',
+    src: 'memories/memory-04.jpg',
+    alt:
+      'Office Aaron negotiates with a cake that legally says his name. Behind him, a toy ship sails a bookshelf sea against an orange wall — maritime HR approved.',
+  },
+  {
+    id: 'm5',
+    src: 'memories/memory-05.jpg',
+    alt:
+      'Five humans perform the sacred Patio Bowl Ritual while a glass skyscraper takes notes on everyone’s carbs. The photographer’s knees are also in the shot and demand credit.',
+  },
+  {
+    id: 'm6',
+    src: 'memories/memory-06.jpg',
+    alt:
+      'Neon beanie intelligence officer suspects Calgary is a decoy for a giant salad. Porter Airlines remains innocent; the ceiling is cosplaying as a wooden barcode.',
+  },
+  {
+    id: 'm7',
+    src: 'memories/memory-07.jpg',
+    alt:
+      'Seven faces, one frame, zero consensus. Far left is running “grumpy toddler” firmware; center is pure joy.exe; brick and bookshelves bear witness.',
+  },
+  {
+    id: 'm8',
+    src: 'memories/memory-08.png',
+    alt:
+      'Three friends toast with red shot glasses inside a Polaroid that fell onto wood-chip reality. A pixel heart guards the border; the clock forever hovers at 6:54.',
+  },
+  {
+    id: 'm9',
+    src: 'memories/memory-09.webp',
+    alt:
+      'Pickleback summit: briny shots lined up like soldiers awaiting orders from a very serious cucumber general. Hydration strategy: questionable. Loyalty: absolute.',
+  },
+  {
+    id: 'm10',
+    src: 'memories/memory-10.png',
+    alt:
+      'Aaron offers a reassuring thumbs-up while Humpty Dumpty, fresh from the Great Fall, stares through Kingston maps with the grin of someone who replaced sleep with egg lore.',
+  },
+  {
+    id: 'm11',
+    src: 'memories/memory-11.jpg',
+    alt:
+      'Teal brick, pleated UFO lamp, cocktails in formation — two glasses-forward agents negotiate salted rims while the booth plots a quiet escape through the window.',
+  },
+  {
+    id: 'm12',
+    src: 'memories/memory-12.jpg',
+    alt:
+      'TF cap, Roots hoodie, and a face buffering the last twenty minutes on mute. Black void background sold separately; skepticism included.',
+  },
+  {
+    id: 'm13',
+    src: 'memories/memory-13.jpg',
+    alt:
+      'The Margarita Succulent blooms: canned mix on skewers, chips for mulch, scissors for harvest. Orange scarf energy says “florists are cowards.”',
+  },
+  {
+    id: 'm14',
+    src: 'memories/memory-14.jpg',
+    alt:
+      'Director’s cut of the margarita tree — same terracotta chaos, new frame; beanie tech documents the arrangement like it’s a shot list for brunch.',
+  },
+  {
+    id: 'm15',
+    src: 'memories/memory-15.jpg',
+    alt:
+      'Finger guns at the ready while the Squeezy’s bouquet holds formation; the countertop still can’t believe it became a tasting menu.',
+  },
+  {
+    id: 'm16',
+    src: 'memories/memory-16.jpg',
+    alt:
+      'The G’s in matching “Picklebacks for Life” merch while a Dynex TV and Glenmorangie supervise from the wood-paneled cheap seats.',
+  },
+  {
+    id: 'm17',
+    src: 'memories/memory-17.jpg',
+    alt:
+      'Beverage fridge crowned with “NO PEEING IN POOL” — she points at policy, he processes the irony of bottles vs. boundaries in real time.',
+  },
+];
+
 /** System popups from desktop icon / gadget clicks */
 export const DESKTOP_ICON_POPUPS = {
-  recycle: [
-    'Recycle Bin: Cannot delete AaronVince.exe — file is in use (birthday party).',
-    'Emptying Recycle Bin… ERROR: Motion memories are permanent.',
-  ],
-  recipes: [
-    '🥗 RECIPES.txt — "Tofu scramble: hold the drama, add hot sauce."',
-    'Folder contains: one (1) emotional support chickpea.',
+  memories: [
+    'BookOfMemories.pdf — "Error: feelings too large for one folder."',
+    'memories_backup.zip — mostly oat lattes and brick walls.',
   ],
   plant: [
     'plant_care.xls — "Water on Wednesdays. Judgment every day."',
@@ -202,7 +448,7 @@ export const DESKTOP_ICON_POPUPS = {
     'Oatly.exe — foam optimized for motion designers.',
   ],
   motion: [
-    'WIP.aep — "If you can read this, send help (and snacks)."',
+    'WIP.aep — "If you can read this, send help (and oat lattes)."',
     'Render queue: 9001 frames. Patience: undefined.',
   ],
   turntable: [
@@ -211,15 +457,15 @@ export const DESKTOP_ICON_POPUPS = {
   ],
   pickleJar: [
     'BRINE_WARNING.log — "You opened this jar. There is no undo."',
-    'pickle_inventory.txt — Quantity: enough for one chaotic snack break.',
+    'pickle_inventory.txt — Quantity: enough for one chaotic crunch break.',
   ],
   stovetop: [
     'stir_pan.gif — "If you’re not tossing the pan, are you even cooking?"',
     'recipe_risotto.md — "Stir until your wrist files for workers’ comp."',
   ],
-  snackTable: [
-    'birthday_cupcakes.zip — "Extract with care. Crumbs are forever."',
-    'snack_risk_assessment.pdf — Conclusion: worth it.',
+  cocktailBar: [
+    'mixology_notes.md — "Shake until your wrist files a complaint."',
+    'happy_hour.xls — "Conclusion: one more round for the timeline."',
   ],
 };
 
@@ -246,13 +492,13 @@ export const HOTSPOT_AARON_REACTIONS = {
       'Medium heat. Maximum drama.',
     ],
   },
-  snackTable: {
+  cocktailBar: {
     part: 'head',
-    scene: 'cakeNibble',
+    scene: 'cocktailToast',
     lines: [
-      '*tiny fork commit* Worth the sugar.',
-      'One bite for the timeline. One bite for me.',
-      'Frosting on the birthday record.',
+      '*clink* Bottoms up for the birthday comp!',
+      'Shaken, not stirred — unlike my keyframes.',
+      'That garnish had no business being that photogenic.',
     ],
   },
   plant: { part: 'legs', lines: ['Watering… spiritually.', 'This pothos gets priority over my sleep.', 'Chlorophyll is just green motion design.'] },
@@ -261,7 +507,14 @@ export const HOTSPOT_AARON_REACTIONS = {
   turntable: { part: 'legs', lines: ['*shuffles feet to the beat*', 'Vinyl > algorithm. Fight me.', 'Headphones on, world off.'] },
   recipes: { part: 'arms', lines: ['Veggie recipes folder! Respect.', 'Vegetarian kitchen supremacy.', 'Nooch army rise up.'] },
   portfolio: { part: 'arms', lines: ['Real portfolio that way →', 'aaronvince.com energy!', 'That’s the good pixels.'] },
-  recycle: { part: 'head', lines: ['Recycle Bin? Bold.', 'You can’t delete me!', 'Trash day is a mindset.'] },
+  memories: {
+    part: 'head',
+    lines: [
+      'That scrapbook could be a motion piece. Title: “Feelings in 12fps.”',
+      'Memories: unlocked. Cringe: optional.',
+      'I’d storyboard this chapter with more lens flares.',
+    ],
+  },
   guestbook: { part: 'arms', lines: ['Sign the guestbook!', 'Birthday wishes this way~', 'Guestbook.exe my beloved.'] },
 };
 
@@ -283,4 +536,110 @@ export const AARON_FACTS = [
   "Aaron is a 'designer who codes' (his words)",
   "Aaron's LinkedIn says he likes 'translating information into emotion'",
   "Aaron is vegetarian — still orders the good appetizers",
+];
+
+/** Extra ticker lines: streamer culture, drinks, anime — mixed with Aaron facts in the UI */
+export const FUN_FACTS_EXTRA = [
+  // Hasan Piker (light, stream-culture jokes)
+  "HasanAbi streams run long enough to finish a whole After Effects RAM preview.",
+  "Fun fact: political commentary Twitch is just keynote with more emotes.",
+  "The VOD is longer than this guestbook — hydration matters.",
+  // Cocktails
+  "A 'dry' martini originally meant less sweet vermouth, not the Sahara.",
+  "The word 'cocktail' showed up in print in 1803 — before Comic Sans, barely.",
+  "Shaking vs stirring changes dilution and mouthfeel — like easing curves for your mouth.",
+  "A proper highball needs ice to the top — like filling a timeline with keyframes.",
+  // Anime
+  "Anime production schedules: more crunch than a pickle jar proximity zone.",
+  "Sakuga frames per second > your portfolio site FPS on mobile. Facts.",
+  "Opening themes are basically motion graphics with higher stakes.",
+  // Oyasumi Punpun
+  "Oyasumi Punpun: cute bird on the cover, emotional damage in the panels.",
+  "Inio Asano draws feelings so hard the gutters start crying.",
+  "Goodnight Punpun — the manga that proves stick-figure energy can wreck you.",
+];
+
+/** Single array for the facts ticker (Aaron + themed extras) */
+export const ALL_TICKER_FACTS = [...AARON_FACTS, ...FUN_FACTS_EXTRA];
+
+/** Emoji shown in hand + projectile for every draggable id (gifts + former hotspots). */
+export const DRAG_ITEM_EMOJI = {
+  latte: '☕',
+  plant: '🪴',
+  cake: '🍰',
+  pickleJar: '🥒',
+  stovetop: '🍳',
+  cocktailBar: '🍸',
+  oatly: '🥛',
+  motion: '🎬',
+  turntable: '🎧',
+  shoe: '👟',
+};
+
+/**
+ * All floating props — same drag style. Gifts use STAGE_GIFTS lines; others use HOTSPOT_AARON_REACTIONS.
+ */
+export const INTERACTIVE_DRAG_ITEMS = [
+  { id: 'latte', label: 'Oat latte' },
+  { id: 'oatly', label: 'Oat milk' },
+  { id: 'cake', label: 'Veggie cake' },
+  { id: 'plant', label: 'Plant buddy' },
+  { id: 'pickleJar', label: 'Pickle jar' },
+  { id: 'stovetop', label: 'Stovetop' },
+  { id: 'cocktailBar', label: 'Cocktails' },
+  { id: 'motion', label: 'Motion WIP' },
+  { id: 'turntable', label: 'Vinyl' },
+  { id: 'shoe', label: 'Loose shoe' },
+];
+
+/**
+ * Draggable gifts → drag icon to Aaron; he reacts, holds, then tosses on his own (random physics).
+ */
+export const STAGE_GIFTS = [
+  {
+    id: 'latte',
+    label: 'Oat latte',
+    emoji: '🥛',
+    lines: [
+      'FOAM. ETHICS. CAFFEINE. The holy trinity.',
+      'Barista mode: imaginary → real.',
+      'This oat latte has better pacing than my last reel.',
+      'Sip sip — now I can pretend I’ll fix this site’s layout.',
+    ],
+  },
+  {
+    id: 'plant',
+    label: 'Plant buddy',
+    emoji: '🪴',
+    lines: [
+      'Photosynthesis loading… 100%. We are SO back.',
+      'This pothos has better work-life balance than my timeline.',
+      'Don’t talk to me or my son (this plant) ever again.',
+      'Chlorophyll is just green motion design.',
+      'Water on Wednesdays. Judgment every day.',
+    ],
+  },
+  {
+    id: 'cake',
+    label: 'Veggie cake',
+    emoji: '🍰',
+    lines: [
+      'Egg-free slice of main-character energy.',
+      'One bite for the timeline. One bite for dignity.',
+      'Frosting level: dangerously on-brand.',
+      'This cake has fewer bugs than Internet Explorer 6. Low bar.',
+    ],
+  },
+  {
+    id: 'shoe',
+    label: 'Loose shoe',
+    emoji: '👟',
+    lines: [
+      'Trajectory: locked. I’m aiming this at Santiago — it’s not personal, it’s *ballistics*.',
+      'Wind’s calm. Guestbook’s in the splash zone. Santiago, blink and you’ll miss it (you won’t).',
+      'They said no shoes in the house. They didn’t say no shoes *toward* Santiago. Loophole.',
+      'If this lands in the Figma file, Santiago submitted feedback. If it lands on Santiago, *also* feedback.',
+      'Hold still, Santiago — I’m just user-testing aerodynamics. For science. And drama.',
+    ],
+  },
 ];

@@ -71,7 +71,7 @@ function Popup({ data, onClose, onSpawnChild }) {
       }}
     >
       <div className="popup-titlebar">
-        <span>{getTitleForType(type)}</span>
+        <span>{getTitleForType(type, payload)}</span>
         <button
           ref={closeRef}
           className={`popup-close ${isRunaway ? 'runaway' : ''}`}
@@ -103,6 +103,27 @@ function Popup({ data, onClose, onSpawnChild }) {
               )}
             </div>
           </>
+        ) : type === 'recipe' && payload && typeof payload === 'object' ? (
+          <>
+            <div className="recipe-popup-hero">
+              <span className="recipe-popup-icon" aria-hidden>{payload.icon}</span>
+              <strong className="recipe-popup-title">{payload.title}</strong>
+            </div>
+            <p className="recipe-popup-time">{payload.time}</p>
+            <h4 className="recipe-popup-h">🧺 Ingredients</h4>
+            <ul className="recipe-popup-list recipe-popup-ingredients">
+              {payload.ingredients.map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
+            <h4 className="recipe-popup-h">👩‍🍳 Method</h4>
+            <ol className="recipe-popup-list recipe-popup-steps">
+              {payload.steps.map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ol>
+            <p className="recipe-popup-foot">{payload.footnote}</p>
+          </>
         ) : (
           <>
             {type === 'confetti' && <span style={{ fontSize: 32 }}>🎊</span>}
@@ -123,13 +144,17 @@ function Popup({ data, onClose, onSpawnChild }) {
   );
 }
 
-function getTitleForType(type) {
+function getTitleForType(type, payload) {
   switch (type) {
     case 'birthday': return '🎂 Birthday Alert!';
     case 'ad': return '⚠️ Special Offer!';
     case 'confetti': return '🎊 Celebration!';
     case 'system': return '⚙️ System Message';
     case 'fakeConfirm': return '⚠️ Confirm';
+    case 'recipe': {
+      const t = payload && typeof payload === 'object' && payload.title;
+      return t ? `🥗 ${t}` : '🥗 VeggieRecipe.exe';
+    }
     default: return 'Message';
   }
 }

@@ -1,5 +1,4 @@
-import { DESKTOP_ICON_POPUPS } from './config';
-import { playError } from './audio';
+import { VEGGIE_RECIPES } from './config';
 
 function randomPick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -11,7 +10,7 @@ function randomPick(arr) {
 export default function DesktopIcons({
   iconRefs,
   onOpenPortfolio,
-  onRecycle,
+  onOpenMemories,
   onVeggieRecipes,
   onGuestbookFocus,
 }) {
@@ -32,15 +31,14 @@ export default function DesktopIcons({
       <button
         type="button"
         className="desktop-icon"
-        ref={(el) => { iconRefs.current.recycle = el; }}
+        ref={(el) => { iconRefs.current.memories = el; }}
         onClick={(e) => {
           e.stopPropagation();
-          playError();
-          onRecycle(randomPick(DESKTOP_ICON_POPUPS.recycle));
+          onOpenMemories();
         }}
       >
-        <span className="desktop-icon-glyph" aria-hidden>🗑️</span>
-        <span className="desktop-icon-label">Recycle Bin</span>
+        <span className="desktop-icon-glyph" aria-hidden>📔</span>
+        <span className="desktop-icon-label">Book of Memories</span>
       </button>
       <button
         type="button"
@@ -48,7 +46,7 @@ export default function DesktopIcons({
         ref={(el) => { iconRefs.current.recipes = el; }}
         onClick={(e) => {
           e.stopPropagation();
-          onVeggieRecipes(randomPick(DESKTOP_ICON_POPUPS.recipes));
+          onVeggieRecipes(randomPick(VEGGIE_RECIPES));
         }}
       >
         <span className="desktop-icon-glyph" aria-hidden>🥗</span>

@@ -3,8 +3,8 @@ import AaronCharacter from './AaronCharacter';
 import PopupGenerator from './PopupGenerator';
 import Guestbook from './Guestbook';
 import DesktopIcons from './DesktopIcons';
-import HotspotGadgets from './HotspotGadgets';
-import SceneEnvironment from './SceneEnvironment';
+import BookOfMemories from './BookOfMemories';
+import StageGifts from './StageGifts';
 import useKonami from './hooks/useKonami';
 import { playPopupSpawn, playKonami, isMuted, toggleMute } from './audio';
 import { isFirebaseConfigured, trackVisitor, subscribeToVisitorCount } from './firebase';
@@ -17,9 +17,11 @@ import {
   SYSTEM_MESSAGES,
   CONFETTI_MESSAGES,
   TITLE_MESSAGES,
-  AARON_FACTS,
+  ALL_TICKER_FACTS,
   DESKTOP_PROXIMITY,
   HOTSPOT_PRIORITY,
+  STAGE_GIFTS,
+  HOTSPOT_AARON_REACTIONS,
 } from './config';
 
 let popupIdCounter = 0;
@@ -138,15 +140,15 @@ function FactsTicker() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      setIdx(i => (i + 1) % AARON_FACTS.length);
+      setIdx(i => (i + 1) % ALL_TICKER_FACTS.length);
     }, 4000);
     return () => clearInterval(id);
   }, []);
 
   return (
     <div className="facts-ticker glass-panel" onClick={(e) => e.stopPropagation()}>
-      <span className="ticker-label">📋 AARON FACT:</span>
-      <span className="ticker-text">{AARON_FACTS[idx]}</span>
+      <span className="ticker-label">📋 FUN FACT:</span>
+      <span className="ticker-text">{ALL_TICKER_FACTS[idx]}</span>
     </div>
   );
 }
@@ -162,6 +164,15 @@ export default function App() {
   const lastSpawnTime = useRef(0);
   const canvasRef = useRef(null);
   const isMobile = useRef(window.matchMedia('(max-width: 640px)').matches);
+  const suppressSpamRef = useRef(
+    typeof localStorage !== 'undefined' && localStorage.getItem('aaron-suppressSpamPopups') === '1',
+  );
+  const [suppressSpamPopups, setSuppressSpamPopups] = useState(() => suppressSpamRef.current);
+  const [memoriesOpen, setMemoriesOpen] = useState(false);
+  const memoriesOpenRef = useRef(false);
+  useEffect(() => {
+    memoriesOpenRef.current = memoriesOpen;
+  }, [memoriesOpen]);
 
   // Matrix background
   useEffect(() => {
@@ -187,10 +198,11 @@ export default function App() {
     }
   }, [popups.length, pendingQueue]);
 
-  // Escape to close topmost
+  // Escape to close topmost (skip while Book of Memories is open — gallery handles Escape)
   useEffect(() => {
     function handler(e) {
       if (e.key === 'Escape') {
+        if (memoriesOpenRef.current) return;
         setPopups(prev => {
           if (prev.length === 0) return prev;
           return prev.slice(0, -1);
@@ -207,6 +219,7 @@ export default function App() {
   }, []);
 
   const enqueuePopup = useCallback(() => {
+    if (suppressSpamRef.current) return;
     const now = Date.now();
     const throttle = isMobile.current ? MOBILE_SPAWN_THROTTLE_MS : POPUP_SPAWN_THROTTLE_MS;
     if (now - lastSpawnTime.current < throttle) return;
@@ -262,6 +275,10 @@ export default function App() {
         || e.target.closest('.desktop-toast')
         || e.target.closest('.desktop-hotspot')
         || e.target.closest('.scene-prop')
+        || e.target.closest('.stage-gifts-floating-root')
+        || e.target.closest('.stage-gift-float')
+        || e.target.closest('.spam-calm-btn')
+        || e.target.closest('.mem07-backdrop')
       ) return;
       enqueuePopup();
     }
@@ -307,6 +324,13 @@ export default function App() {
     setMuted(toggleMute());
   }, []);
 
+  const handleToggleSpamCalm = useCallback((e) => {
+    e.stopPropagation();
+    suppressSpamRef.current = !suppressSpamRef.current;
+    localStorage.setItem('aaron-suppressSpamPopups', suppressSpamRef.current ? '1' : '0');
+    setSuppressSpamPopups(suppressSpamRef.current);
+  }, []);
+
   const [visitorCount, setVisitorCount] = useState(null);
   const fallbackCount = useRef(
     Math.floor(Math.random() * 50000) + 10000
@@ -315,7 +339,7 @@ export default function App() {
   const guestbookRef = useRef(null);
   const hotspotRefs = useRef({
     portfolio: null,
-    recycle: null,
+    memories: null,
     recipes: null,
     guestbook: null,
     plant: null,
@@ -324,13 +348,37 @@ export default function App() {
     turntable: null,
     pickleJar: null,
     stovetop: null,
-    snackTable: null,
+    cocktailBar: null,
   });
   const lastCharSample = useRef(0);
   const prevHotspotId = useRef(null);
   const [charBounds, setCharBounds] = useState(null);
   const [desktopToast, setDesktopToast] = useState(null);
   const [activeHotspot, setActiveHotspot] = useState(null);
+  const [giftDelivery, setGiftDelivery] = useState(null);
+
+  const handleFloatDeliver = useCallback((id) => {
+    const gift = STAGE_GIFTS.find((g) => g.id === id);
+    if (gift) {
+      const line = gift.lines[Math.floor(Math.random() * gift.lines.length)];
+      setGiftDelivery({
+        key: Date.now(),
+        id: gift.id,
+        line,
+      });
+      return;
+    }
+    const spec = HOTSPOT_AARON_REACTIONS[id];
+    if (!spec) return;
+    const line = spec.lines[Math.floor(Math.random() * spec.lines.length)];
+    setGiftDelivery({
+      key: Date.now(),
+      id,
+      line,
+      scene: spec.scene,
+      part: spec.part,
+    });
+  }, []);
 
   const spawnSystemPopup = useCallback((payload) => {
     const vw = window.innerWidth;
@@ -343,6 +391,32 @@ export default function App() {
       y: Math.max(40, Math.min(vh - 200, Math.random() * (vh - 250))),
       zIndex: 9000 + popupIdCounter,
       payload,
+      seed: Math.floor(Math.random() * 100),
+      behaviorFlags: { runaway: false, stubborn: false, spawnsChild: false },
+    };
+    playPopupSpawn();
+    triggerShake();
+    setPopups((prev) => {
+      if (prev.length >= MAX_VISIBLE_POPUPS) {
+        setPendingQueue((q) => [...q, p]);
+        return prev;
+      }
+      return [...prev, p];
+    });
+  }, [triggerShake]);
+
+  /** Veggie Recipes desktop icon — full absurd recipe card */
+  const spawnRecipePopup = useCallback((recipe) => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const maxW = Math.min(vw * 0.94, 460);
+    const p = {
+      id: ++popupIdCounter,
+      type: 'recipe',
+      x: Math.max(8, Math.min(vw - maxW - 8, Math.random() * Math.max(1, vw - maxW - 16))),
+      y: Math.max(24, Math.min(vh - 420, Math.random() * Math.max(1, vh - 480))),
+      zIndex: 9000 + popupIdCounter,
+      payload: recipe,
       seed: Math.floor(Math.random() * 100),
       behaviorFlags: { runaway: false, stubborn: false, spawnsChild: false },
     };
@@ -439,21 +513,15 @@ export default function App() {
           onOpenPortfolio={() => {
             window.open('https://aaronvince.com', '_blank', 'noopener,noreferrer');
           }}
-          onRecycle={(msg) => spawnSystemPopup(msg)}
-          onVeggieRecipes={(msg) => spawnSystemPopup(msg)}
-          onGuestbookFocus={() => {
-            guestbookRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          onOpenMemories={() => {
+            playPopupSpawn();
+            setMemoriesOpen(true);
           }}
-        />
-
-        <HotspotGadgets
-          hotspotRefs={hotspotRefs}
-          onSpawnSystem={(msg) => spawnSystemPopup(msg)}
-        />
-
-        <SceneEnvironment
-          hotspotRefs={hotspotRefs}
-          onSpawnSystem={(msg) => spawnSystemPopup(msg)}
+          onVeggieRecipes={(recipe) => spawnRecipePopup(recipe)}
+          onGuestbookFocus={() => {
+            guestbookRef.current?.expand?.();
+            guestbookRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+          }}
         />
 
         {desktopToast && (
@@ -475,6 +543,12 @@ export default function App() {
 
         <FactsTicker />
 
+        <p className="stage-gifts-inline-hint glass-panel">
+          Drag any icon from the row below to Aaron — he reacts, holds it, then tosses it when he feels like it.
+        </p>
+
+        <StageGifts charBounds={charBounds} onDeliver={handleFloatDeliver} />
+
         <div className="main-content">
           <Guestbook ref={guestbookRef} />
         </div>
@@ -484,6 +558,7 @@ export default function App() {
           onInteraction={enqueuePopup}
           onPositionChange={handleCharPosition}
           activeHotspot={activeHotspot}
+          giftDelivery={giftDelivery}
         />
 
         <div className="visitor-counter glass-panel">
@@ -506,6 +581,8 @@ export default function App() {
         onSpawnChild={handleSpawnChild}
       />
 
+      <BookOfMemories open={memoriesOpen} onClose={() => setMemoriesOpen(false)} />
+
       <nav className="win7-taskbar" aria-label="Taskbar">
         <button
           type="button"
@@ -520,6 +597,22 @@ export default function App() {
         />
         <div className="taskbar-apps" aria-hidden />
         <div className="taskbar-tray">
+          <button
+            type="button"
+            className={`spam-calm-btn spam-calm-btn--tray ${suppressSpamPopups ? 'active' : ''}`}
+            onClick={handleToggleSpamCalm}
+            title={
+              suppressSpamPopups
+                ? 'Turn chaos back on (random popups from clicks & scroll)'
+                : 'Calm mode: stop random popups — Aaron still talks & animalese plays'
+            }
+            aria-label={
+              suppressSpamPopups ? 'Disable calm popup mode' : 'Enable calm mode: fewer random popups'
+            }
+            aria-pressed={suppressSpamPopups}
+          >
+            {suppressSpamPopups ? '🧘 Calm' : '⚡ Chaos'}
+          </button>
           <button
             type="button"
             className={`mute-btn mute-btn--tray ${muted ? 'muted' : ''}`}

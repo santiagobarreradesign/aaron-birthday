@@ -1,5 +1,12 @@
+import { loadAnimaleseLibrary, synthesizeAnimalese } from './lib/animalese.js';
+
 let ctx = null;
 let muted = localStorage.getItem('aaron-mute') === '1';
+
+const ANIMALESE_WAV = `${import.meta.env.BASE_URL}animalese.wav`;
+/** Villager chatter — keep low so the on-screen line stays easy to read. */
+const ANIMALESE_VOLUME = 0.05;
+let currentSpeechAudio = null;
 
 function getCtx() {
   if (!ctx) {
@@ -23,7 +30,7 @@ function playTone(freq, duration = 0.12, type = 'square', volume = 0.15) {
     gain.connect(c.destination);
     osc.start(c.currentTime);
     osc.stop(c.currentTime + duration);
-  } catch (_) { /* audio not supported */ }
+  } catch { /* audio not supported */ }
 }
 
 export function playPopupSpawn() {
@@ -60,6 +67,42 @@ export function playKonami() {
   notes.forEach((f, i) => setTimeout(() => playTone(f, 0.15, 'triangle', 0.2), i * 120));
 }
 
+/** Preload letter library for animalese (optional; first speech also loads). */
+export function preloadAnimalese() {
+  return loadAnimaleseLibrary(ANIMALESE_WAV).catch(() => {});
+}
+
+/**
+ * Play animalese.js synthesis for bubble text (github.com/Acedio/animalese.js).
+ * Stops any previous bubble speech.
+ */
+export async function playBubbleSpeech(text) {
+  if (muted || !text) return;
+  try {
+    await loadAnimaleseLibrary(ANIMALESE_WAV);
+    if (muted) return;
+    stopBubbleSpeech();
+    const shorten = text.length > 50;
+    const uri = synthesizeAnimalese(text, { shorten, pitch: 1.05 });
+    const audio = new Audio(uri);
+    audio.volume = ANIMALESE_VOLUME;
+    currentSpeechAudio = audio;
+    await audio.play();
+  } catch {
+    /* autoplay blocked or synthesis failure */
+  }
+}
+
+export function stopBubbleSpeech() {
+  if (currentSpeechAudio) {
+    try {
+      currentSpeechAudio.pause();
+      currentSpeechAudio.src = '';
+    } catch { /* ignore */ }
+    currentSpeechAudio = null;
+  }
+}
+
 export function isMuted() {
   return muted;
 }
@@ -67,5 +110,6 @@ export function isMuted() {
 export function toggleMute() {
   muted = !muted;
   localStorage.setItem('aaron-mute', muted ? '1' : '0');
+  if (muted) stopBubbleSpeech();
   return muted;
 }
