@@ -174,6 +174,25 @@ export default function App() {
     memoriesOpenRef.current = memoriesOpen;
   }, [memoriesOpen]);
 
+  const [startOrbFlash, setStartOrbFlash] = useState(false);
+  const startOrbFlashTimerRef = useRef(null);
+
+  const triggerStartOrbFlash = useCallback(() => {
+    if (startOrbFlashTimerRef.current) clearTimeout(startOrbFlashTimerRef.current);
+    setStartOrbFlash(true);
+    startOrbFlashTimerRef.current = setTimeout(() => {
+      setStartOrbFlash(false);
+      startOrbFlashTimerRef.current = null;
+    }, 500);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (startOrbFlashTimerRef.current) clearTimeout(startOrbFlashTimerRef.current);
+    },
+    [],
+  );
+
   // Matrix background
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -590,6 +609,7 @@ export default function App() {
           onClick={(e) => {
             e.stopPropagation();
             playPopupSpawn();
+            triggerStartOrbFlash();
             setDesktopToast('Windows 7 aesthetic. Windows 11 anxiety.');
             setTimeout(() => setDesktopToast(null), 2800);
           }}
@@ -625,6 +645,17 @@ export default function App() {
           <TaskbarClock />
         </div>
       </nav>
+
+      {startOrbFlash && (
+        <div className="start-orb-flash" aria-hidden>
+          <img
+            src={`${import.meta.env.BASE_URL}crazy-aaron.png`}
+            alt=""
+            className="start-orb-flash__img"
+            draggable={false}
+          />
+        </div>
+      )}
 
       {konamiActive && <div className="konami-flash" />}
 

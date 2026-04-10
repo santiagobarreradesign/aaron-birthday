@@ -647,6 +647,88 @@ body.shaking {
   transform: scale(0.97);
 }
 
+/* Full-screen “Start” jump scare — grainy portrait + glitch (0.5s, App-controlled) */
+.start-orb-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+  overflow: hidden;
+  background: #020203;
+}
+
+.start-orb-flash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.45) 2px,
+    rgba(0, 0, 0, 0.45) 3px
+  );
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.start-orb-flash__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  animation: startOrbGlitch 0.5s steps(2, end) forwards;
+  filter: contrast(1.35) saturate(0);
+}
+
+@keyframes startOrbGlitch {
+  0% {
+    transform: translate(0, 0) scale(1.04);
+    filter: contrast(1.6) saturate(0) brightness(1.1);
+    clip-path: inset(0 0 0 0);
+  }
+  15% {
+    transform: translate(-3vw, 2vh) scale(1.12) skewX(-4deg);
+    filter: contrast(2.8) saturate(0) invert(1) hue-rotate(90deg);
+    clip-path: inset(8% 12% 5% 0);
+  }
+  30% {
+    transform: translate(4vw, -1vh) scale(1.18) skewX(6deg);
+    filter: contrast(3.2) saturate(1.5) brightness(0.85);
+    clip-path: inset(0 5% 18% 10%);
+  }
+  45% {
+    transform: translate(-2vw, 3vh) scale(1.1);
+    filter: contrast(2.4) saturate(0) invert(0.85) hue-rotate(200deg);
+    clip-path: inset(12% 0 8% 15%);
+  }
+  60% {
+    transform: translate(2vw, -2vh) scale(1.14);
+    filter: contrast(3) saturate(0) brightness(1.25);
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 55%);
+  }
+  75% {
+    transform: translate(-4vw, 1vh) scale(1.08) skewY(3deg);
+    filter: contrast(2.2) saturate(0) sepia(0.6);
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    transform: translate(0, 0) scale(1.06);
+    filter: contrast(2) saturate(0) brightness(1);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .start-orb-flash__img {
+    animation: none;
+    filter: contrast(1.3) saturate(0);
+  }
+}
+
 .taskbar-apps {
   flex: 1;
   min-height: 32px;
