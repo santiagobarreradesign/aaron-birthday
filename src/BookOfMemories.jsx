@@ -4,6 +4,10 @@ import { BOOK_OF_MEMORIES_ITEMS } from './config';
 const base = import.meta.env.BASE_URL;
 const total = BOOK_OF_MEMORIES_ITEMS.length;
 
+function isVideoSrc(src) {
+  return /\.(mov|mp4|webm)$/i.test(src);
+}
+
 export default function BookOfMemories({ open, onClose }) {
   const [page, setPage] = useState(0);
   /** +1 = forward flip, -1 = back — drives CSS enter animation */
@@ -130,12 +134,23 @@ export default function BookOfMemories({ open, onClose }) {
               data-enter={enterDir === 1 ? 'fwd' : 'back'}
             >
               <div className="mem07-mat">
-                <img
-                  src={`${base}${item.src}`}
-                  alt={item.alt}
-                  className="mem07-photo"
-                  decoding="async"
-                />
+                {isVideoSrc(item.src) ? (
+                  <video
+                    className="mem07-photo"
+                    src={`${base}${item.src}`}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    aria-label={item.alt}
+                  />
+                ) : (
+                  <img
+                    src={`${base}${item.src}`}
+                    alt={item.alt}
+                    className="mem07-photo"
+                    decoding="async"
+                  />
+                )}
               </div>
               <p className="mem07-caption">{item.alt}</p>
             </div>
@@ -153,7 +168,18 @@ export default function BookOfMemories({ open, onClose }) {
               onClick={() => jumpTo(i)}
               title={`Picture ${i + 1}`}
             >
-              <img src={`${base}${it.src}`} alt="" className="mem07-thumb-img" />
+              {isVideoSrc(it.src) ? (
+                <video
+                  src={`${base}${it.src}`}
+                  className="mem07-thumb-img"
+                  muted
+                  playsInline
+                  preload="metadata"
+                  aria-hidden
+                />
+              ) : (
+                <img src={`${base}${it.src}`} alt="" className="mem07-thumb-img" />
+              )}
             </button>
           ))}
         </div>

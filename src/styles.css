@@ -1538,6 +1538,11 @@ body.shaking {
   border: 1px solid #8899aa;
 }
 
+.mem07-mat video.mem07-photo {
+  /* same box as photos; keeps MOV/WebM from stretching oddly */
+  max-width: 100%;
+}
+
 .mem07-caption {
   margin: 12px 4px 0;
   padding: 10px 12px;

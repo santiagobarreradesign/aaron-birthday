@@ -431,6 +431,96 @@ export const BOOK_OF_MEMORIES_ITEMS = [
     alt:
       'Beverage fridge crowned with “NO PEEING IN POOL” — she points at policy, he processes the irony of bottles vs. boundaries in real time.',
   },
+  {
+    id: 'm18',
+    src: 'memories/memory-18.jpg',
+    alt:
+      'Low-angle CN Tower flex: arms raised, mouth at eleven, “upla” wristband proving you RSVP’d to the skyline. Clouds approve; downtown holds its breath.',
+  },
+  {
+    id: 'm19',
+    src: 'memories/memory-19.jpg',
+    alt:
+      'Parking-garage duck face, plate in one hand, sample cup in the other — backpack says “catering run,” face says “main character at a tasting menu relay.”',
+  },
+  {
+    id: 'm20',
+    src: 'memories/memory-20.jpg',
+    alt:
+      'Brick, mesh, and a fire-escape sign judging your Git blame while plaid-and-cap Aaron ships pixels at the laptop. EXIT is for cowards; Cmd-S is forever.',
+  },
+  {
+    id: 'm21',
+    src: 'memories/memory-21.jpg',
+    alt:
+      'Café chin-on-hand, paper cup anchor, yellow beanie declaring “I’m the highlighter in this scene.” Industrial panels nod in agreement.',
+  },
+  {
+    id: 'm22',
+    src: 'memories/memory-22.jpg',
+    alt:
+      'Snow-dome selfie: Heineken in a gloved hand, a Coors skyscraper photobombing the horizon, yellow beanie maxing winter saturation.',
+  },
+  {
+    id: 'm23',
+    src: 'memories/memory-23.jpg',
+    alt:
+      'Winter sequel: she’s smiling for the algorithm; he’s interrogating a mysterious blue rectangle while the giant beer prop looms like a sponsor nobody asked for.',
+  },
+  {
+    id: 'm24',
+    src: 'memories/memory-24.jpg',
+    alt:
+      'Ferry bench rom-com: cans, tote bags, and a framed portrait judging the middle-finger diplomacy while someone goes in for the cheek kiss.',
+  },
+  {
+    id: 'm25',
+    src: 'memories/memory-25.jpg',
+    alt:
+      'BUONS eatery merch meets patio chili-pepper lights and a curtain that’s doing the most; fiddle-leaf fig files a noise complaint about sheer whimsy.',
+  },
+  {
+    id: 'm26',
+    src: 'memories/memory-26.jpg',
+    alt:
+      'Low-angle TF-cap ceiling tour: exposed beams, ductwork, and a squint that says “I’m documenting rafters for the building inspector of vibes.”',
+  },
+  {
+    id: 'm27',
+    src: 'memories/memory-27.png',
+    alt:
+      'Phone screenshot of a Polaroid of three shot-cup champions — 6:54 forever, brick EXIT cosplay, heart sticker proving the group chat peaked here.',
+  },
+  {
+    id: 'm28',
+    src: 'memories/memory-28.jpg',
+    alt:
+      'Holiday selfie trinity: leopard chains, “OH SNAP” gingerbread chaos sweater, peace-sign hype in green fleece — warm light, warmer group chat.',
+  },
+  {
+    id: 'm29',
+    src: 'memories/memory-29.mov',
+    alt:
+      'Motion clip: handheld proof that some memories refuse to sit still — press play and let the timeline breathe.',
+  },
+  {
+    id: 'm30',
+    src: 'memories/memory-30.mov',
+    alt:
+      'Motion clip: summer file size energy — if it buffered, it’s canon.',
+  },
+  {
+    id: 'm31',
+    src: 'memories/memory-31.mov',
+    alt:
+      'Motion clip: long-form nostalgia — grab popcorn; the bit rate is emotional.',
+  },
+  {
+    id: 'm32',
+    src: 'memories/memory-32.mov',
+    alt:
+      'Motion clip: short reel, tall feelings — sound on for the director’s commentary.',
+  },
 ];
 
 /** System popups from desktop icon / gadget clicks */
