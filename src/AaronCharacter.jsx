@@ -45,6 +45,11 @@ const INTERACT_MESSAGES = [
   "Vegetarian cake and motion graphics. Name a better duo. I'll wait.",
   "Walk near the pickle jar — I dare you.",
   "The cocktail illustrations are vector — unlike my sleep schedule.",
+  "If this site were a Figma file I’d rename it final_FINAL_v9_chaos.fig",
+  "Hover? I don’t know her — this is a birthday page, we commit to the bit.",
+  "My inner critic is doing motion graphics on the loading spinner of my soul.",
+  "Pearson screens wish they had this many layers of irony.",
+  "Belleville roots, Toronto boots, oat milk in both hands.",
 ];
 
 const PUPPET_DRAG_QUIPS = [
@@ -54,6 +59,47 @@ const PUPPET_DRAG_QUIPS = [
   '*limbs go floppy on purpose*',
   'Toronto transit has NOTHING on this ride.',
   'Put me down and I’ll kern your birthday card!',
+  '🧭 You are now the creative director of my coordinates.',
+  '🎪 Main stage: me. VIP: also me. Security: these popups.',
+  'Drag-and-drop me like a component with no auto-layout.',
+  'This is user testing. The user is unhinged. It’s you.',
+];
+
+/** Second tap on same limb/torso within window → bonus line */
+const DOUBLE_ARM_LINES = [
+  'DOUBLE arm tap — that’s a micro-interaction with macro drama!',
+  'Two taps? You’re iterating. I respect the agile methodology.',
+  '*jazz hands escalate* Encore! Encore! The portfolio is that way →',
+];
+
+const DOUBLE_LEG_LINES = [
+  'DOUBLE leg tap — are we choreographing or just caffeinated?',
+  'That’s the Canada Post power-walk muscle memory kicking in!',
+  '*kicks imaginary soccer ball* GOOOAL… for vegetarian appetizers.',
+];
+
+const DOUBLE_TORSO_LINES = [
+  'DOUBLE core tap — my torso is basically a design system: one spine, many opinions.',
+  'That’s the “midsection of truth” — where oat lattes go to feel seen.',
+  '*pats ribs* Still one biology degree worth of organs in here. Probably.',
+];
+
+const HEAD_TRIPLE_EGG = [
+  'THREE head taps?? Filed under “user really likes faces.”',
+  'Achievement: Head Harasser — +10 chaos, −0 dignity.',
+  'Triple-tap UX? Bold. My product manager is screaming in another tab.',
+];
+
+const KEYBOARD_BONUS_LINES = [
+  'Space/Enter — accessible chaos. WCAG could never.',
+  'Keyboard user? You’re the VIP in the 2007 birthday matrix.',
+  '*boops hat toward keyboard* That’s a shortcut to my heart. And my bugs.',
+];
+
+const MILESTONE_BANTS = [
+  'You’ve clicked me so many times I’m basically a soundboard now.',
+  'Interaction debt: crushing. Emotional debt: also crushing. Worth it.',
+  'That’s a lot of taps. Somewhere a UX researcher is taking notes.',
 ];
 
 const DRAG_CLICK_MAX_PX = 10;
@@ -108,6 +154,8 @@ export default function AaronCharacter({
   /** Unified pointer: small movement = part click, larger = puppet drag */
   const pointerSession = useRef(null);
   const bubbleTimer = useRef(null);
+  const lastPartTapRef = useRef({ part: null, time: 0 });
+  const headRapidRef = useRef({ count: 0, deadline: 0 });
   const animFrame = useRef(null);
   const idleTimeout = useRef(null);
   const posRef = useRef(pos);
@@ -348,6 +396,12 @@ export default function AaronCharacter({
     };
   }, [giftDelivery, onInteraction]);
 
+  useEffect(() => {
+    if (interactionCount > 0 && interactionCount % 20 === 0) {
+      showBubble(randomPick(MILESTONE_BANTS));
+    }
+  }, [interactionCount, showBubble]);
+
   const stopFlightLoop = useCallback(() => {
     if (flightRafRef.current) {
       cancelAnimationFrame(flightRafRef.current);
@@ -427,50 +481,138 @@ export default function AaronCharacter({
     stopFlightLoop();
   }, [stopFlightLoop]);
 
-  const handlePartClick = useCallback((part, e) => {
-    e?.stopPropagation?.();
-    setInteractionCount(c => c + 1);
-    onInteraction?.();
-
-    const headQuips = [
-      "Hey! That's my face!",
-      "My head contains a Biology AND Design degree",
-      "Careful, there's vegetarian braincell knowledge in there",
-      "That's where the kerning expertise lives",
-      "Ow! I need this brain for After Effects!",
-    ];
-    const armQuips = [
-      "*waves excitedly*",
-      "*waves like I'm flagging down oat lattes*",
-      "These arms animated the MaRS branding!",
-      "Jazz hands! I learned this at York!",
-      "*waves at my real portfolio from this terrible website*",
-    ];
-    const legQuips = [
-      "*dances aggressively*",
-      "*does the designer shuffle*",
-      "These legs delivered mail for Canada Post!",
-      "I need these legs to walk to the bakery (egg-free options please)",
-      "*breakdances in Comic Sans*",
-    ];
-
-    if (part === 'head') {
+  const onAaronKeyDown = useCallback(
+    (e) => {
+      if (e.key !== ' ' && e.key !== 'Enter') return;
+      e.preventDefault();
+      setInteractionCount((c) => c + 1);
       setHeadAnim(true);
       playHeadClick();
-      showBubble(headQuips[Math.floor(Math.random() * headQuips.length)]);
-      setTimeout(() => setHeadAnim(false), 700);
-    } else if (part === 'arms') {
-      setArmAnim(true);
-      playArmClick();
-      showBubble(armQuips[Math.floor(Math.random() * armQuips.length)]);
-      setTimeout(() => setArmAnim(false), 1000);
-    } else if (part === 'legs') {
-      setLegAnim(true);
-      playLegClick();
-      showBubble(legQuips[Math.floor(Math.random() * legQuips.length)]);
-      setTimeout(() => setLegAnim(false), 1200);
-    }
-  }, [onInteraction, showBubble]);
+      showBubble(randomPick(KEYBOARD_BONUS_LINES));
+      setTimeout(() => setHeadAnim(false), 750);
+    },
+    [showBubble],
+  );
+
+  const handlePartClick = useCallback(
+    (part, e) => {
+      e?.stopPropagation?.();
+      const now = Date.now();
+
+      if (part === 'head') {
+        const h = headRapidRef.current;
+        if (now > h.deadline) h.count = 0;
+        h.count += 1;
+        h.deadline = now + 650;
+        if (h.count >= 3) {
+          h.count = 0;
+          h.deadline = 0;
+          setInteractionCount((c) => c + 1);
+          onInteraction?.();
+          setHeadAnim(true);
+          playHeadClick();
+          showBubble(randomPick(HEAD_TRIPLE_EGG));
+          setTimeout(() => setHeadAnim(false), 900);
+          lastPartTapRef.current = { part: null, time: 0 };
+          return;
+        }
+      } else {
+        headRapidRef.current = { count: 0, deadline: 0 };
+      }
+
+      const prev = lastPartTapRef.current;
+      if (
+        part !== 'head' &&
+        prev.part === part &&
+        now - prev.time < 450
+      ) {
+        lastPartTapRef.current = { part: null, time: 0 };
+        setInteractionCount((c) => c + 1);
+        onInteraction?.();
+        if (part === 'arms') {
+          setArmAnim(true);
+          playArmClick();
+          showBubble(randomPick(DOUBLE_ARM_LINES));
+          setTimeout(() => setArmAnim(false), 1100);
+        } else if (part === 'legs') {
+          setLegAnim(true);
+          playLegClick();
+          showBubble(randomPick(DOUBLE_LEG_LINES));
+          setTimeout(() => setLegAnim(false), 1300);
+        } else if (part === 'torso') {
+          setArmAnim(true);
+          playArmClick();
+          showBubble(randomPick(DOUBLE_TORSO_LINES));
+          setTimeout(() => setArmAnim(false), 1100);
+        }
+        return;
+      }
+
+      lastPartTapRef.current = { part, time: now };
+
+      setInteractionCount((c) => c + 1);
+      onInteraction?.();
+
+      const headQuips = [
+        "Hey! That's my face!",
+        'My head contains a Biology AND Design degree',
+        "Careful, there's vegetarian braincell knowledge in there",
+        "That's where the kerning expertise lives",
+        'Ow! I need this brain for After Effects!',
+        'Face card: valid. Pop-up card: also valid. Help.',
+        'That’s my thinking cap — it’s mostly party hat, some anxiety.',
+        'Booped! My retinas registered that in 60fps.',
+      ];
+      const armQuips = [
+        '*waves excitedly*',
+        "*waves like I'm flagging down oat lattes*",
+        'These arms animated the MaRS branding!',
+        'Jazz hands! I learned this at York!',
+        '*waves at my real portfolio from this terrible website*',
+        '*air-high-fives the concept of work-life balance*',
+        'These elbows have seen more keyframes than my sleep schedule.',
+      ];
+      const legQuips = [
+        '*dances aggressively*',
+        '*does the designer shuffle*',
+        'These legs delivered mail for Canada Post!',
+        'I need these legs to walk to the bakery (egg-free options please)',
+        '*breakdances in Comic Sans*',
+        '*tiny step-touch* That’s the Lansdowne strut.',
+        'Leg day? Every day. It’s called walking to the oat latte.',
+      ];
+      const torsoQuips = [
+        '*core engaged* That’s 100% vegetarian protein and 0% chill.',
+        'Torso tap! That’s where I keep my “designer who codes” badge (invisible).',
+        'Midsection lore: one spine, two degrees, infinite opinions.',
+        '*stomach rumbles in oat milk Morse code*',
+        'That tickles my ribcage’s information architecture.',
+      ];
+
+      if (part === 'head') {
+        setHeadAnim(true);
+        playHeadClick();
+        showBubble(headQuips[Math.floor(Math.random() * headQuips.length)]);
+        setTimeout(() => setHeadAnim(false), 700);
+      } else if (part === 'arms') {
+        setArmAnim(true);
+        playArmClick();
+        showBubble(armQuips[Math.floor(Math.random() * armQuips.length)]);
+        setTimeout(() => setArmAnim(false), 1000);
+      } else if (part === 'legs') {
+        setLegAnim(true);
+        playLegClick();
+        showBubble(legQuips[Math.floor(Math.random() * legQuips.length)]);
+        setTimeout(() => setLegAnim(false), 1200);
+      } else if (part === 'torso') {
+        setArmAnim(true);
+        playArmClick();
+        showBubble(torsoQuips[Math.floor(Math.random() * torsoQuips.length)]);
+        setTimeout(() => setArmAnim(false), 1000);
+      }
+    },
+    [onInteraction, showBubble],
+  );
 
   const endPointer = useCallback((e) => {
     const s = pointerSession.current;
@@ -571,6 +713,10 @@ export default function AaronCharacter({
     <div
       ref={roamRef}
       className={`aaron-roaming ${dragging ? 'aaron-puppet-drag' : ''}`}
+      tabIndex={0}
+      role="group"
+      aria-label="Aaron — tap head, torso, arms, or legs; double-tap limbs or torso for extra lines; triple-tap head for a secret; Space or Enter for a random quip. Drag to move."
+      onKeyDown={onAaronKeyDown}
       style={{
         position: 'fixed',
         left: pos.x,
@@ -676,6 +822,16 @@ export default function AaronCharacter({
 
         <line x1="40" y1={NECK_Y - bodyBob} x2="40" y2={HIP_Y}
           stroke="#000" strokeWidth="3.5" strokeLinecap="round" />
+
+        <g className="clickable-zone" data-part="torso">
+          <rect
+            x="22"
+            y={SHOULDER_Y - 4 - bodyBob}
+            width="36"
+            height={HIP_Y - SHOULDER_Y + 10}
+            fill="transparent"
+          />
+        </g>
 
         <g
           className={`clickable-zone ${armAnim ? 'arm-waving' : ''}`}

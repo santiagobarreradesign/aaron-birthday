@@ -323,6 +323,96 @@ export const VEGGIE_RECIPES = [
     ],
     footnote: '📎 Pairs with: carrots, pita, and pretending you meal-prepped.',
   },
+  {
+    title: 'Tofu That Saw Things (Pan-Seared PTSD)',
+    icon: '🍳',
+    time: '22 min · Emotional damage: medium-rare',
+    ingredients: [
+      '🧈 Extra-firm tofu — pressed until it files a restraining order',
+      '🫒 High-smoke oil — the kind that survives your coping mechanisms',
+      '🧄 Garlic enough to erase a first date',
+      '🫙 Soy sauce + 🍚 rice vinegar + 🌶️ chili crisp — the holy trinity of “I’m fine”',
+    ],
+    steps: [
+      'Slice tofu like you’re storyboarding revenge — uniform slabs, no mercy.',
+      'Hot dry pan until the kitchen smells like a design critique.',
+      'Sear both sides until golden; if it sticks, that’s character development.',
+      'Splash soy, toss chili crisp, eat while staring out a window like a food documentary villain.',
+    ],
+    footnote: '🎬 Pairs with: pretending stock footage is “B-roll of my soul.”',
+  },
+  {
+    title: 'Laser Lentil Soup (ISO 9001 Compliant)',
+    icon: '🍲',
+    time: '55 min · Serves: auditors and goblins',
+    ingredients: [
+      '🫘 Red lentils — rinse until the water runs clear like your browser history',
+      '🥕 Mirepoix cosplay: carrot, celery, onion — dice until your wrist sends a Slack message',
+      '🍅 Canned tomatoes — one dent = +10 flavor lore',
+      '🌿 Cumin, coriander, smoked paprika — spice cabinet speedrun',
+      '🥛 Coconut milk — optional, like your boundaries',
+    ],
+    steps: [
+      'Sweat veg until soft; add spices until your nose negotiates a raise.',
+      'Dump lentils + tomatoes + stock; simmer until the lentils forget they were ever dry.',
+      'Blend half if you want “restaurant mouthfeel” or leave chunky for “I own a ladle and trauma.”',
+      'Finish with lemon; salt until the soup stops tasting like a spreadsheet.',
+    ],
+    footnote: '📋 Traceability: from pot to bowl, no Jira ticket required.',
+  },
+  {
+    title: 'Kale Chips: Betrayal Edition',
+    icon: '🥬',
+    time: '18 min · Crispiness: legally distinct from happiness',
+    ingredients: [
+      '🥬 Kale — stems evicted; leaves torn like bad feedback',
+      '🫒 Oil — enough to make kale admit it wanted to be junk food',
+      '🧂 Salt, nutritional yeast — “nooch” is just glitter for vegans',
+    ],
+    steps: [
+      'Massage kale like you’re apologizing for your last git force-push.',
+      'Spread single-layer; crowding is how kale becomes compost cosplay.',
+      'Bake at 160°C / 325°F until edges curl — if it’s ash, you aimed for “cursed.”',
+      'Eat immediately; kale chips have the shelf life of a good mood.',
+    ],
+    footnote: '🔥 Nutrition facts: 1× serving of main-character crunch.',
+  },
+  {
+    title: 'Zoodle Interventions (Carbs Called — They Want You Back)',
+    icon: '🥒',
+    time: '12 min · Spiralized judgment',
+    ingredients: [
+      '🥒 Zucchini — spiralized until it looks like pasta cosplay',
+      '🍅 Cherry tomatoes — halved like deadlines',
+      '🧄 Garlic, 🫒 olive oil, 🌿 basil — the Italian delegation',
+      '🧀 Veg parmesan — enough to fake legitimacy',
+    ],
+    steps: [
+      'Sauté garlic in oil until fragrant; do not let it brown or it will unionize.',
+      'Toss zoodles 2–3 min — overheat and you get soup; underheat and you get salad trauma.',
+      'Tomatoes in last; cheese at the table like a standing ovation.',
+      'Tell yourself it’s pasta. Mean it for at least one bite.',
+    ],
+    footnote: '🍝 Spaghetti lawyers have been notified. Results may vary.',
+  },
+  {
+    title: 'Stuffed Mushrooms (Edible Tiny Plates)',
+    icon: '🍄',
+    time: '35 min · Oven @ 200°C / 400°F',
+    ingredients: [
+      '🍄 Cremini caps — stems minced; caps hollowed like tiny bowls of destiny',
+      '🧅 Shallot + 🧄 garlic — minced until smooth like your portfolio lies',
+      '🍞 Breadcrumbs + 🌿 parsley + 🧀 veg cream cheese — the binder caucus',
+      '🧂 Salt, pepper, optional 🌶️ chili flake — chaos voters',
+    ],
+    steps: [
+      'Sauté stem mix until the kitchen smells like a bistro fanfic.',
+      'Cool slightly; fold in cheese + crumbs until it holds a shape (unlike your sleep schedule).',
+      'Stuff caps, doming politely — no mushroom should look like it’s in debt.',
+      'Bake until tops brown; serve before everyone asks if there’s “real” food.',
+    ],
+    footnote: '🍽️ Each mushroom is a tiny stage for your appetizer TED Talk.',
+  },
 ];
 
 /**
@@ -647,7 +737,40 @@ export const FUN_FACTS_EXTRA = [
   "Oyasumi Punpun: cute bird on the cover, emotional damage in the panels.",
   "Inio Asano draws feelings so hard the gutters start crying.",
   "Goodnight Punpun — the manga that proves stick-figure energy can wreck you.",
+  // Design / type / tools
+  "Golden ratio ≈ 1.618 — designers cite it like it’s astrology with better PR.",
+  "The FedEx logo has a hidden arrow. Now you’ll see it on every truck. Forever.",
+  "Amazon’s smile is also an A→Z arrow — UX storytelling with a side of prime shipping.",
+  "Bézier curves: four points, infinite ego. Drag a handle and feel like a god.",
+  "CMYK is for print; RGB is for screens; arguing about it is for everyone.",
+  "Figma auto-layout is flexbox with better hair.",
+  "A ‘pixel-perfect’ mockup is a myth — browsers eat myths for breakfast.",
+  "Negative space isn’t empty — it’s the design holding its breath.",
+  "WCAG contrast isn’t optional unless you hate eyes on purpose.",
+  "The pen tool: fewer points, smoother curves, fewer emotional breakdowns.",
+  "Motion design: if it eases wrong, your brain files a noise complaint.",
+  "Variable fonts: one file, many weights — like mood swings but typographic.",
+  "Grid systems: invisible until you break them; then everyone’s a critic.",
+  "Brutalism in web design is just concrete cosplay for divs.",
+  "A design system is a component library that learned politics.",
+  // Random universe
+  "Bananas are berries; strawberries aren’t. Botany runs on spite.",
+  "Honey never spoils — archaeologists found edible honey in Egyptian tombs.",
+  "Octopuses have three hearts and blue blood — main-character stats.",
+  "Wombat poop is cube-shaped — nature’s most committed branding.",
+  "Sharks existed before trees. Timeline’s unhinged.",
+  "A day on Venus is longer than a year on Venus — schedule meetings carefully.",
+  "Hot water freezes faster than cold sometimes (Mpemba effect) — physics said ‘no rules’.",
+  "Oxford comma: optional in life, mandatory in lawsuits.",
+  "The shortest war lasted ~38–45 minutes (Anglo-Zanzibar, 1896) — still longer than some renders.",
+  "Sloths only poop once a week — efficiency icon.",
+  "Crows remember faces — be nice to birds.",
+  "Nutella’s ‘serving size’ is a suggestion; the jar is a social construct.",
+  "There are more ways to shuffle a deck of cards than atoms on Earth — your Figma file is fine.",
+  "Toast always lands butter-side down — Murphy was a UX researcher.",
+  "Pineapples take ~2 years to grow — patience, but fruit.",
 ];
+
 
 /** Single array for the facts ticker (Aaron + themed extras) */
 export const ALL_TICKER_FACTS = [...AARON_FACTS, ...FUN_FACTS_EXTRA];

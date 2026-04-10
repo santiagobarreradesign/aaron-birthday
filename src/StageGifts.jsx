@@ -115,9 +115,10 @@ export default function StageGifts({ charBounds, onDeliver }) {
             {draggingId === g.id ? (
               <div className="stage-gift-placeholder" aria-hidden />
             ) : (
-              <div
+              <button
+                type="button"
                 className="stage-gift-float"
-                aria-label={g.label}
+                aria-label={`${g.label} — drag to Aaron`}
                 onPointerDown={(e) => handlePointerDown(e, g.id)}
               >
                 <div className="stage-gift-float-inner">
@@ -125,7 +126,7 @@ export default function StageGifts({ charBounds, onDeliver }) {
                     {DRAG_ITEM_EMOJI[g.id]}
                   </span>
                 </div>
-              </div>
+              </button>
             )}
           </div>
         ))}

@@ -563,7 +563,8 @@ export default function App() {
         <FactsTicker />
 
         <p className="stage-gifts-inline-hint glass-panel">
-          Drag any icon from the row below to Aaron — he reacts, holds it, then tosses it when he feels like it.
+          Drag or touch-drag any icon from the row to Aaron — or walk him over an icon. He reacts, holds it, then
+          tosses it when he feels like it.
         </p>
 
         <StageGifts charBounds={charBounds} onDeliver={handleFloatDeliver} />

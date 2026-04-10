@@ -246,6 +246,7 @@ body.shaking {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   margin: 0;
   padding: 6px 4px;
@@ -260,6 +261,8 @@ body.shaking {
   line-height: 1.15;
   max-width: 88px;
   text-align: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.15);
 }
 
 .desktop-icon:hover {
@@ -299,6 +302,7 @@ body.shaking {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   margin: 0;
   padding: 6px 4px;
@@ -313,6 +317,8 @@ body.shaking {
   line-height: 1.15;
   max-width: 88px;
   text-align: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.15);
 }
 
 .desktop-hotspot:hover {
@@ -879,6 +885,20 @@ body.shaking {
   touch-action: none;
   pointer-events: auto;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  border-radius: 8px;
+}
+
+.stage-gift-float:focus-visible {
+  outline: 2px solid var(--aero-blue-light);
+  outline-offset: 2px;
 }
 
 .stage-gift-float:active {
@@ -1771,16 +1791,19 @@ body.shaking {
   background: #fff;
   color: #000;
   font-family: var(--font-comic);
-  font-size: 14px;
-  line-height: 1.35;
+  font-size: clamp(13px, 3.4vw, 15px);
+  line-height: 1.45;
   font-weight: bold;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border-radius: 12px;
   border: 2px solid #000;
   box-shadow: 2px 2px 0 #000;
-  max-width: min(260px, 78vw);
+  max-width: min(380px, calc(100vw - 32px));
+  min-width: min(200px, 86vw);
   white-space: normal;
   text-align: center;
+  overflow-wrap: anywhere;
+  hyphens: auto;
   pointer-events: none;
   z-index: 100;
   animation: bubbleBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1815,7 +1838,7 @@ body.shaking {
 .speech-bubble.vamonos-yell {
   color: #b00;
   border-color: #d22;
-  font-size: 15px;
+  font-size: clamp(15px, 4vw, 18px);
   font-weight: 900;
   letter-spacing: 0.04em;
   text-shadow:
@@ -1827,6 +1850,12 @@ body.shaking {
 }
 
 /* ---- AARON CHARACTER ---- */
+.aaron-roaming:focus-visible {
+  outline: 3px solid var(--aero-blue-light);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
 .aaron-facing {
   display: inline-block;
   vertical-align: top;
@@ -2032,6 +2061,55 @@ body.shaking {
   border: 1px solid #000;
 }
 
+/* ---- TASKBAR: touch-friendly (WCAG-ish 44px targets on narrow viewports) ---- */
+@media (max-width: 768px) {
+  .win7-taskbar {
+    min-height: 48px;
+    padding-left: max(6px, env(safe-area-inset-left, 0px));
+    padding-right: max(8px, env(safe-area-inset-right, 0px));
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0px));
+    align-items: center;
+  }
+
+  .start-orb {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .mute-btn--tray {
+    min-width: 44px;
+    min-height: 44px;
+    width: auto;
+    height: auto;
+    padding: 8px 12px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .spam-calm-btn--tray {
+    min-height: 44px;
+    padding: 8px 12px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .taskbar-tray {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .taskbar-clock {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 4px;
+  }
+}
+
 /* ---- REDUCED MOTION ---- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -2067,15 +2145,16 @@ body.shaking {
 
   .desktop-icon {
     flex: 0 1 calc(25% - 8px);
-    min-width: 0;
+    min-width: min(92px, 24vw);
+    min-height: 44px;
     max-width: 88px;
-    padding: 4px 2px;
+    padding: 8px 6px;
     font-size: 9px;
     line-height: 1.1;
   }
 
   .desktop-icon-glyph {
-    font-size: 24px;
+    font-size: 26px;
   }
 
   .desktop-icon-label {
@@ -2127,8 +2206,13 @@ body.shaking {
     gap: 6px;
   }
   .desktop-hotspot {
-    max-width: 68px;
+    max-width: 72px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px 6px;
     font-size: 9px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.15);
   }
   .scene-environment {
     bottom: 40px;
@@ -2136,9 +2220,12 @@ body.shaking {
     padding: 0 4px;
   }
   .scene-prop {
-    max-width: 64px;
-    padding: 4px 6px;
+    max-width: 72px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px 8px;
     font-size: 9px;
+    touch-action: manipulation;
   }
   .scene-prop-glyph {
     font-size: 22px;
