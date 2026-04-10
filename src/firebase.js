@@ -17,20 +17,23 @@ import {
 } from 'firebase/firestore';
 
 // ============================================================
-// Firebase config (from Firebase Console → Project settings → Web app)
+// Firebase web config — set VITE_FIREBASE_* in .env.local (local)
+// or GitHub Actions secrets (CI). Never commit real values.
 // ============================================================
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyByeHaJxNErRM9pN5XNXccQRnT7C6a1_sk',
-  authDomain: 'aaron-birthday-dba6e.firebaseapp.com',
-  projectId: 'aaron-birthday-dba6e',
-  storageBucket: 'aaron-birthday-dba6e.firebasestorage.app',
-  messagingSenderId: '53347558618',
-  appId: '1:53347558618:web:f69b4a80b94fa5921a71e3',
-  measurementId: 'G-4LJYW6NGDC',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-const hasConfig = !!firebaseConfig.apiKey;
+const hasConfig = Boolean(
+  firebaseConfig.apiKey && String(firebaseConfig.apiKey).length > 0,
+);
 
 let db = null;
 

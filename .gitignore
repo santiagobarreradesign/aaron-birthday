@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Firebase / Vite env (keep real values only in .env.local or CI secrets)
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
