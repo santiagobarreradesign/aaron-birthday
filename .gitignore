@@ -28,3 +28,9 @@ Aaron Face.png
 1753491417347.jpeg
 *.pdf
 dist/
+
+# Large local photo drops (site uses optimized copies under public/memories/)
+book-of-memories/
+
+# Duplicate of public/crazy-aaron.png if saved at repo root
+/crazy-aaron.png
